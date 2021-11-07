@@ -19,9 +19,6 @@ intents = discord.Intents.default()
 intents.typing = True
 intents.presences = True
 intents.members = True
-intents.messages = True
-intents.guilds = True
-intents.reactions = True
 
 help_command = commands.DefaultHelpCommand(
     no_category = 'Commands'
@@ -54,62 +51,36 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    role = discord.utils.find(lambda r: r.name == 'Verified', message.author.guild.roles)
+    await bot.process_commands(message)
 
-    try:
-        if role in message.author.roles:
-            await bot.process_commands(message)
-    except:
-        await bot.process_commands(message)
+
+# admin commands
 
 @bot.command(name="mute", help="Mute Member Command : '!mute {member}'")
-@commands.has_any_role('Petabyte bot manager')
+@commands.has_role('Petabyte bot manager')
+@commands.has_role('Verified')
 async def mute(ctx, member : discord.Member):
     await member.edit(mute=True)
     
     ctx.channel.send("Succesfully Muted {}".format(member.name))
 
 @bot.command(name="unmute", help="Unmute Member Command : '!unmute {member}'")
-@commands.has_any_role('Petabyte bot manager')
+@commands.has_role('Petabyte bot manager')
+@commands.has_role('Verified')
 async def unmute(ctx, member : discord.Member):
     await member.edit(mute=False)
 
     ctx.channel.send("Succesfully Unmuted {}".format(member.name))
 
-@bot.command(name="verify", help="Verify To Chat In This Server")
-async def verify(ctx):
-    confirmEmoji = '\U00002705'
-    
-    message = await ctx.send("Click reaction to verify\nTimeout 30 second")
-    
-    await message.add_reaction(emoji=confirmEmoji)
-
-    def check(reaction, user):
-        return reaction.emoji == confirmEmoji
-
-    reaction, user = await bot.wait_for('reaction_add', timeout=30, check=check)
-
-    channel = discord.utils.get(member.guild.channels, name="welcome")
-
-    channel_id = channel.id
-
-    await bot.get_channel(channel_id).send(f'Hi {member.name}, welcome to Petabyte server!')
-
-    roleToAdd = get(ctx.guild.roles, name="Verified")
-
-    memberToAddRole = get(ctx.guild.members,name=ctx.author.name)
-
-    await memberToAddRole.add_roles(roleToAdd)
-
-    await message.delete()
-
-@bot.command(name="purgeChannel", help="Purge channel with limit Command : '!purgeChannel {Limit(int)}'")
-@commands.has_any_role('Petabyte bot manager')
-async def purgeChannel(ctx, limit : int):
+@bot.command(name="purge", help="Purge channel with limit Command : '!purgeChannel {Limit(int)}'")
+@commands.has_role('Petabyte bot manager')
+@commands.has_role('Verified')
+async def purge(ctx, limit : int):
     await ctx.channel.purge(limit=limit)
 
 @bot.command(name="resetNick", help="Reset Member Nickname Command : '!resetNick {@Member}'")
-@commands.has_any_role('Petabyte bot manager')
+@commands.has_role('Petabyte bot manager')
+@commands.has_role('Verified')
 async def resetNick(ctx, member : discord.Member):
     memberNick = member.nick
 
@@ -122,7 +93,8 @@ async def resetNick(ctx, member : discord.Member):
     await ctx.channel.send("{} Nickname Has Been Successfully Changed To {}".format(memberNick, memberName))
 
 @bot.command(name="resetAllNick", help="Reset All Member Nickname In Server Command : '!resetAllNick'")
-@commands.has_any_role('Petabyte bot manager')
+@commands.has_role('Petabyte bot manager')
+@commands.has_role('Verified')
 async def resetAllNick(ctx):
     guild = ctx.guild
     members = guild.members
@@ -141,15 +113,79 @@ async def resetAllNick(ctx):
 
     await ctx.channel.send("Successfully Changed All Member Nickname\nOld To New")
 
+
+# public commands
+
+@bot.command(name="verify", help="Verify To Chat In This Server")
+@commands.guild_only()
+async def verify(ctx):
+    verifiedRole = discord.utils.find(lambda r: r.name == 'Verified', ctx.author.guild.roles)
+
+    if verifiedRole not in ctx.author.roles:
+        confirmEmoji = '\U00002705'
+        
+        message = await ctx.send("Click reaction to verify\nTimeout 30 second")
+        
+        await message.add_reaction(emoji = confirmEmoji)
+
+        def check(reaction, user):
+            return reaction.emoji == confirmEmoji
+
+        try:
+            reaction, user = await bot.wait_for('reaction_add', timeout = 30, check = check)
+
+            channel = discord.utils.get(ctx.author.guild.channels, name="welcome")
+
+            await channel.send(f'Hi {ctx.author.name}, welcome to Petabyte server!')
+
+            roleToAdd = get(ctx.guild.roles, name = "Verified")
+
+            await ctx.author.add_roles(roleToAdd)
+
+            await message.delete()
+        except asyncio.TimeoutError:
+            await message.delete()
+    else:
+        await ctx.send('{} already verified'.format(ctx.author.name))
+
 @bot.command(name="ping", help="Send Ping Command : '!ping'")
-@commands.has_any_role('Petabyte bot manager')
+@commands.has_role('Verified')
 async def ping(ctx):
-    before = time.monotonic()
+    await ctx.send('My ping is {}s'.format(round(bot.latency, 1)))
+
+@bot.command(name="where_am_i", help="Prints details of Server")
+@commands.has_role('Verified')
+@commands.guild_only()
+async def where_am_i(ctx):
+    owner = str(ctx.guild.owner)
+    region = str(ctx.guild.region)
+    guild_id = str(ctx.guild.id)
+    memberCount = str(ctx.guild.member_count)
+    icon = str(ctx.guild.icon_url)
+    desc = ctx.guild.description
     
-    message = await ctx.channel.send("Pong!")
 
-    ping = (time.monotonic() - before) * 1000
+    if desc:
+        embed = discord.Embed(
+            title = ctx.guild.name + " Server Information",
+            description = desc,
+            color = discord.Color.blue()
+        )
+    else:
+        embed = discord.Embed(
+            title = ctx.guild.name + " Server Information",
+            description = "No description",
+            color = discord.Color.blue()
+        )
 
-    await message.edit(content="Ping! `{}ms`".format(int(ping)))
+
+    embed.set_thumbnail(url = icon)
+    embed.add_field(name = "Owner", value = owner, inline = True)
+    embed.add_field(name = "Server ID", value = guild_id, inline = True)
+    embed.add_field(name = "Region", value = region, inline = True)
+    embed.add_field(name = "Member Count", value = memberCount, inline = True)
+
+    await ctx.send(embed = embed)
+
 
 bot.run(TOKEN)
