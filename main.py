@@ -9,7 +9,7 @@ from discord.utils import get
 from dotenv import load_dotenv
 
 # components
-from components import music
+from components import music, error_handler
 
 
 load_dotenv()
@@ -30,7 +30,9 @@ help_command = commands.DefaultHelpCommand(
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
+# cog
 bot.add_cog(music.Music(bot))
+bot.add_cog(error_handler.CommandErrorHandler(bot))
 
 @bot.event
 async def on_ready():
@@ -48,17 +50,16 @@ async def on_member_join(member):
     )
 
 @bot.event
-async def on_command_error(ctx, error):
-    await ctx.send(error)
-
-@bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
 
     role = discord.utils.find(lambda r: r.name == 'Verified', message.author.guild.roles)
 
-    if role in message.author.roles:
+    try:
+        if role in message.author.roles:
+            await bot.process_commands(message)
+    except:
         await bot.process_commands(message)
 
 @bot.command(name="mute", help="Mute Member Command : '!mute {member}'")
