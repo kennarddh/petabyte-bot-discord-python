@@ -1,11 +1,15 @@
 import os
 import asyncio
 import time
+import youtube_dl
 
 import discord
 from discord.ext import commands, tasks
 from discord.utils import get
 from dotenv import load_dotenv
+
+# components
+from components import music
 
 
 load_dotenv()
@@ -15,6 +19,9 @@ intents = discord.Intents.default()
 intents.typing = True
 intents.presences = True
 intents.members = True
+intents.messages = True
+intents.guilds = True
+intents.reactions = True
 
 help_command = commands.DefaultHelpCommand(
     no_category = 'Commands'
@@ -22,6 +29,8 @@ help_command = commands.DefaultHelpCommand(
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+
+bot.add_cog(music.Music(bot))
 
 @bot.event
 async def on_ready():
@@ -141,5 +150,5 @@ async def ping(ctx):
     ping = (time.monotonic() - before) * 1000
 
     await message.edit(content="Ping! `{}ms`".format(int(ping)))
-    
+
 bot.run(TOKEN)
