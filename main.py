@@ -60,17 +60,25 @@ async def on_message(message):
 @commands.has_role('Petabyte bot manager')
 @commands.has_role('Verified')
 async def mute(ctx, member : discord.Member):
-    await member.edit(mute=True)
-    
-    ctx.channel.send("Succesfully Muted {}".format(member.name))
+    ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
+    if ownerRole not in member.roles:
+        await member.edit(mute=True)
+        
+        ctx.channel.send("Succesfully Muted {}".format(member.name))
+    else:
+        await ctx.send("Can't modify owner")
 
 @bot.command(name="unmute", help="Unmute Member Command : '!unmute {member}'")
 @commands.has_role('Petabyte bot manager')
 @commands.has_role('Verified')
 async def unmute(ctx, member : discord.Member):
-    await member.edit(mute=False)
+    ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
+    if ownerRole not in member.roles:
+        await member.edit(mute=False)
 
-    ctx.channel.send("Succesfully Unmuted {}".format(member.name))
+        ctx.channel.send("Succesfully Unmuted {}".format(member.name))
+    else:
+        await ctx.send("Can't modify owner")
 
 @bot.command(name="purge", help="Purge channel with limit Command : '!purgeChannel {Limit(int)}'")
 @commands.has_role('Petabyte bot manager')
@@ -82,15 +90,19 @@ async def purge(ctx, limit : int):
 @commands.has_role('Petabyte bot manager')
 @commands.has_role('Verified')
 async def resetNick(ctx, member : discord.Member):
-    memberNick = member.nick
+    ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
+    if ownerRole not in member.roles:
+        memberNick = member.nick
 
-    if memberNick == None:
-        memberNick = member.name
-    
-    memberName = member.name
-    await member.edit(nick=memberName)
+        if memberNick == None:
+            memberNick = member.name
+        
+        memberName = member.name
+        await member.edit(nick=memberName)
 
-    await ctx.channel.send("{} Nickname Has Been Successfully Changed To {}".format(memberNick, memberName))
+        await ctx.channel.send("{} Nickname Has Been Successfully Changed To {}".format(memberNick, memberName))
+    else:
+        await ctx.send("Can't modify owner")
 
 @bot.command(name="resetAllNick", help="Reset All Member Nickname In Server Command : '!resetAllNick'")
 @commands.has_role('Petabyte bot manager')
@@ -109,7 +121,7 @@ async def resetAllNick(ctx):
                 memberNick = member.name
 
             memberName = member.name
-            await member.edit(nick=memberName)
+            await member.edit(nick = memberName)
 
     await ctx.channel.send("Successfully Changed All Member Nickname\nOld To New")
 
@@ -119,34 +131,38 @@ async def resetAllNick(ctx):
 @bot.command(name="verify", help="Verify To Chat In This Server")
 @commands.guild_only()
 async def verify(ctx):
-    verifiedRole = discord.utils.find(lambda r: r.name == 'Verified', ctx.author.guild.roles)
+    ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
+    if ownerRole not in ctx.author.roles:
+        verifiedRole = discord.utils.find(lambda r: r.name == 'Verified', ctx.author.guild.roles)
 
-    if verifiedRole not in ctx.author.roles:
-        confirmEmoji = '\U00002705'
-        
-        message = await ctx.send("Click reaction to verify\nTimeout 30 second")
-        
-        await message.add_reaction(emoji = confirmEmoji)
+        if verifiedRole not in ctx.author.roles:
+            confirmEmoji = '\U00002705'
+            
+            message = await ctx.send("Click reaction to verify\nTimeout 30 second")
+            
+            await message.add_reaction(emoji = confirmEmoji)
 
-        def check(reaction, user):
-            return reaction.emoji == confirmEmoji
+            def check(reaction, user):
+                return reaction.emoji == confirmEmoji
 
-        try:
-            reaction, user = await bot.wait_for('reaction_add', timeout = 30, check = check)
+            try:
+                reaction, user = await bot.wait_for('reaction_add', timeout = 30, check = check)
 
-            channel = discord.utils.get(ctx.author.guild.channels, name="welcome")
+                channel = discord.utils.get(ctx.author.guild.channels, name="welcome")
 
-            await channel.send(f'Hi {ctx.author.name}, welcome to Petabyte server!')
+                await channel.send(f'Hi {ctx.author.name}, welcome to Petabyte server!')
 
-            roleToAdd = get(ctx.guild.roles, name = "Verified")
+                roleToAdd = get(ctx.guild.roles, name = "Verified")
 
-            await ctx.author.add_roles(roleToAdd)
+                await ctx.author.add_roles(roleToAdd)
 
-            await message.delete()
-        except asyncio.TimeoutError:
-            await message.delete()
+                await message.delete()
+            except asyncio.TimeoutError:
+                await message.delete()
+        else:
+            await ctx.send('{} already verified'.format(ctx.author.name))
     else:
-        await ctx.send('{} already verified'.format(ctx.author.name))
+        await ctx.send("Can't modify owner")
 
 @bot.command(name="ping", help="Send Ping Command : '!ping'")
 @commands.has_role('Verified')
