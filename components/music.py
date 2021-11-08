@@ -9,7 +9,6 @@ from discord.ext import commands
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 ytdl_format_options = {
-    'outtmpl': '/music/%(title)s.%(ext)s',
     'format': 'bestaudio/best',
     'restrictfilenames': True,
     'noplaylist': True,
@@ -79,19 +78,12 @@ class Music(commands.Cog, name='Music'):
     async def play(self, ctx, *, url):
         """Streams from a url"""
 
-        print('url')
-        print(url)
-
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
             ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
 
-        self.now_playing = player.title
-        self.status = 'playing'
-        self.now_url = 'url'
-
         await ctx.send(f'Now playing: {player.title}')
-
+        
     @commands.command(name="music_volume")
     @commands.has_any_role('Petabyte bot manager')
     @commands.has_role('Verified')
