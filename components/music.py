@@ -82,6 +82,10 @@ class Music(commands.Cog, name='Music'):
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
             ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
 
+        self.now_playing = player.title
+        self.status = 'playing'
+        self.now_url = 'url'
+
         await ctx.send(f'Now playing: {player.title}')
         
     @commands.command(name="music_volume")
