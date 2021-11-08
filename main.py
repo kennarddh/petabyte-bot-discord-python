@@ -35,9 +35,9 @@ async def on_ready():
             f'{guild.name}(id: {guild.id})'
         )
 
-        ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
-        verifiedRole = discord.utils.find(lambda r: r.name == 'Verified', ctx.author.guild.roles)
-        verifyChannel = discord.utils.get(ctx.author.guild.channels, name="verify")
+        ownerRole = discord.utils.find(lambda r: r.name == 'Owner', guild.roles)
+        verifiedRole = discord.utils.find(lambda r: r.name == 'Verified', guild.roles)
+        verifyChannel = discord.utils.get(guild.channels, name="verify")
         confirmEmoji = '\U00002705'
         
         await verifyChannel.purge(limit=100)
@@ -53,9 +53,9 @@ async def on_ready():
 
         if ownerRole not in ctx.author.roles:
             if verifiedRole not in ctx.author.roles:
-                channel = discord.utils.get(ctx.author.guild.channels, name="welcome")
+                channel = discord.utils.get(guild.channels, name="welcome")
 
-                await channel.send(f'Hi {ctx.author.name}, welcome to Petabyte server!')
+                await channel.send(f'Hi {user.name}, welcome to Petabyte server!')
 
                 await user.add_roles(verifiedRole)
 
