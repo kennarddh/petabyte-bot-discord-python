@@ -11,13 +11,13 @@ class PublicCommands(commands.Cog):
 
     @commands.command(name="ping", help="Send Ping Command : '!ping'")
     @commands.has_role('Verified')
-    async def ping(ctx):
+    async def ping(self, ctx):
         await ctx.send('My ping is {}s'.format(round(self.bot.latency, 1)))
 
     @commands.command(name="where_am_i", help="Prints details of Server")
     @commands.has_role('Verified')
     @commands.guild_only()
-    async def where_am_i(ctx):
+    async def where_am_i(self, ctx):
         owner = str(ctx.guild.owner)
         region = str(ctx.guild.region)
         guild_id = str(ctx.guild.id)
