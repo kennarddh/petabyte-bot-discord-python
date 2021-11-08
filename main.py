@@ -1,6 +1,5 @@
 import os
 import asyncio
-import time
 
 import discord
 from discord.ext import commands, tasks
@@ -8,7 +7,7 @@ from discord.utils import get
 from dotenv import load_dotenv
 
 # components
-from components import music, error_handler
+from components import music, error_handler, admin_commands, public_commands
 
 
 load_dotenv()
@@ -26,6 +25,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # cog
 bot.add_cog(music.Music(bot))
 bot.add_cog(error_handler.CommandErrorHandler(bot))
+bot.add_cog(admin_commands.AdminCommands(bot))
+bot.add_cog(public_commands.PublicCommands(bot))
 
 @bot.event
 async def on_ready():
@@ -57,13 +58,10 @@ async def on_ready():
 
                         await user.add_roles(verifiedRole)
 
-
-@bot.event
-async def on_member_join(member):
-    await member.create_dm()
-    await member.dm_channel.send(
-        f'Hi {member.name}, welcome to Petabyte server!'
-    )
+                        await member.create_dm()
+                        await member.dm_channel.send(
+                            f'Hi {member.name}, welcome to Petabyte server!'
+                        )
 
 @bot.event
 async def on_message(message):
@@ -71,120 +69,6 @@ async def on_message(message):
         return
 
     await bot.process_commands(message)
-
-
-# admin commands
-
-@bot.command(name="mute", help="Mute Member Command : '!mute {member}'")
-@commands.has_role('Petabyte bot manager')
-@commands.has_role('Verified')
-async def mute(ctx, member : discord.Member):
-    ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
-    if ownerRole not in member.roles:
-        await member.edit(mute=True)
-        
-        ctx.channel.send("Succesfully Muted {}".format(member.name))
-    else:
-        await ctx.send("Can't modify owner")
-
-@bot.command(name="unmute", help="Unmute Member Command : '!unmute {member}'")
-@commands.has_role('Petabyte bot manager')
-@commands.has_role('Verified')
-async def unmute(ctx, member : discord.Member):
-    ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
-    if ownerRole not in member.roles:
-        await member.edit(mute=False)
-
-        ctx.channel.send("Succesfully Unmuted {}".format(member.name))
-    else:
-        await ctx.send("Can't modify owner")
-
-@bot.command(name="purge", help="Purge channel with limit Command : '!purgeChannel {Limit(int)}'")
-@commands.has_role('Petabyte bot manager')
-@commands.has_role('Verified')
-async def purge(ctx, limit : int):
-    await ctx.channel.purge(limit=limit)
-
-@bot.command(name="resetNick", help="Reset Member Nickname Command : '!resetNick {@Member}'")
-@commands.has_role('Petabyte bot manager')
-@commands.has_role('Verified')
-async def resetNick(ctx, member : discord.Member):
-    ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
-    if ownerRole not in member.roles:
-        memberNick = member.nick
-
-        if memberNick == None:
-            memberNick = member.name
-        
-        memberName = member.name
-        await member.edit(nick=memberName)
-
-        await ctx.channel.send("{} Nickname Has Been Successfully Changed To {}".format(memberNick, memberName))
-    else:
-        await ctx.send("Can't modify owner")
-
-@bot.command(name="resetAllNick", help="Reset All Member Nickname In Server Command : '!resetAllNick'")
-@commands.has_role('Petabyte bot manager')
-@commands.has_role('Verified')
-async def resetAllNick(ctx):
-    guild = ctx.guild
-    members = guild.members
-
-    response = "Successfully Changed All Member Nickname\nOld To New\n"
-
-    for member in members:
-        if member != guild.owner:
-            memberNick = member.nick
-
-            if memberNick == None:
-                memberNick = member.name
-
-            memberName = member.name
-            await member.edit(nick = memberName)
-
-    await ctx.channel.send("Successfully Changed All Member Nickname\nOld To New")
-
-
-# public commands
-
-@bot.command(name="ping", help="Send Ping Command : '!ping'")
-@commands.has_role('Verified')
-async def ping(ctx):
-    await ctx.send('My ping is {}s'.format(round(bot.latency, 1)))
-
-@bot.command(name="where_am_i", help="Prints details of Server")
-@commands.has_role('Verified')
-@commands.guild_only()
-async def where_am_i(ctx):
-    owner = str(ctx.guild.owner)
-    region = str(ctx.guild.region)
-    guild_id = str(ctx.guild.id)
-    memberCount = str(ctx.guild.member_count)
-    icon = str(ctx.guild.icon_url)
-    desc = ctx.guild.description
-    
-
-    if desc:
-        embed = discord.Embed(
-            title = ctx.guild.name + " Server Information",
-            description = desc,
-            color = discord.Color.blue()
-        )
-    else:
-        embed = discord.Embed(
-            title = ctx.guild.name + " Server Information",
-            description = "No description",
-            color = discord.Color.blue()
-        )
-
-
-    embed.set_thumbnail(url = icon)
-    embed.add_field(name = "Owner", value = owner, inline = True)
-    embed.add_field(name = "Server ID", value = guild_id, inline = True)
-    embed.add_field(name = "Region", value = region, inline = True)
-    embed.add_field(name = "Member Count", value = memberCount, inline = True)
-
-    await ctx.send(embed = embed)
 
 
 bot.run(TOKEN)
