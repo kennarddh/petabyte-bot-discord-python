@@ -51,8 +51,8 @@ async def on_ready():
 
         reaction, user = await bot.wait_for('reaction_add', check = check)
 
-        if ownerRole not in ctx.author.roles:
-            if verifiedRole not in ctx.author.roles:
+        if ownerRole not in user.roles:
+            if verifiedRole not in user.roles:
                 channel = discord.utils.get(guild.channels, name="welcome")
 
                 await channel.send(f'Hi {user.name}, welcome to Petabyte server!')
