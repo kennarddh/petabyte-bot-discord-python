@@ -46,18 +46,17 @@ async def on_ready():
         
         await message.add_reaction(emoji = confirmEmoji)
 
-        def check(reaction, user):
-            return reaction.emoji == confirmEmoji
+        @bot.event
+        async def on_reaction_add(reaction, user):
+            if reaction.emoji == confirmEmoji:
+                if ownerRole not in user.roles:
+                    if verifiedRole not in user.roles:
+                        channel = discord.utils.get(guild.channels, name="welcome")
 
-        reaction, user = await bot.wait_for('reaction_add', check = check)
+                        await channel.send(f'Hi {user.name}, welcome to Petabyte server!')
 
-        if ownerRole not in user.roles:
-            if verifiedRole not in user.roles:
-                channel = discord.utils.get(guild.channels, name="welcome")
+                        await user.add_roles(verifiedRole)
 
-                await channel.send(f'Hi {user.name}, welcome to Petabyte server!')
-
-                await user.add_roles(verifiedRole)
 
 @bot.event
 async def on_member_join(member):
