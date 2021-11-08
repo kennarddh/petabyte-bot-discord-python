@@ -59,7 +59,8 @@ class Music(commands.Cog, name='Music'):
         self.now_url = ''
 
     @commands.command(name="music_join")
-    @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Petabyte bot manager')
+    @commands.has_role('Verified')
     async def join(self, ctx):
         """Joins a voice channel"""
 
@@ -73,7 +74,7 @@ class Music(commands.Cog, name='Music'):
         await channel.connect()
 
     @commands.command(name="music_play")
-    @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def play(self, ctx, *, url):
         """Streams from a url"""
@@ -89,7 +90,7 @@ class Music(commands.Cog, name='Music'):
         await ctx.send(f'Now playing: {player.title}')
         
     @commands.command(name="music_volume")
-    @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def volume(self, ctx, volume: int):
         """Changes the player's volume"""
@@ -103,7 +104,7 @@ class Music(commands.Cog, name='Music'):
         await ctx.send(f"Changed volume to {volume}%")
 
     @commands.command(name='music_pause')
-    @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def pause(self, ctx):
         self.status = 'paused'
@@ -116,7 +117,7 @@ class Music(commands.Cog, name='Music'):
             await ctx.send("The bot is not playing anything at the moment.")
         
     @commands.command(name='music_resume')
-    @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def resume(self, ctx):
         voice_client = ctx.message.guild.voice_client
@@ -129,7 +130,7 @@ class Music(commands.Cog, name='Music'):
         self.status = 'playing'
 
     @commands.command(name="music_stop")
-    @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def stop(self, ctx):
         """Stops and disconnects the bot from voice"""
@@ -141,7 +142,10 @@ class Music(commands.Cog, name='Music'):
         await ctx.voice_client.disconnect()
 
     @commands.command(name="music_status")
+    @commands.has_role('Verified')
     async def now_playing(self, ctx):
+        print('self.now_url')
+        print(self.now_url)
         if self.now_playing:
             embed = discord.Embed(
                 title = "Now playing",
