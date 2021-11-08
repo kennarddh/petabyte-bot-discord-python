@@ -14,7 +14,7 @@ from components import music, error_handler
 load_dotenv()
 TOKEN = os.environ['DISCORD_TOKEN']
 
-intents = discord.Intents.all()
+intents = discord.Intents().all()
 
 help_command = commands.DefaultHelpCommand(
     no_category = 'Commands'
