@@ -18,6 +18,7 @@ intents = discord.Intents.default()
 intents.typing = True
 intents.presences = True
 intents.members = True
+intents.reactions = True
 
 help_command = commands.DefaultHelpCommand(
     no_category = 'Commands'
