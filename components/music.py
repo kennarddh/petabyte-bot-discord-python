@@ -56,7 +56,7 @@ class Music(commands.Cog, name='Music'):
         self.bot = bot
         self.now_playing = ""
         self.volume = 0.5
-        self.status = 'stopped'
+        self.status = 'stop'
         self.now_url = ''
 
     @commands.command(name="music_join")
@@ -75,8 +75,12 @@ class Music(commands.Cog, name='Music'):
 
     @commands.command(name="music_play")
     @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Verified')
     async def play(self, ctx, *, url):
         """Streams from a url"""
+
+        print('url')
+        print(url)
 
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
@@ -90,6 +94,7 @@ class Music(commands.Cog, name='Music'):
 
     @commands.command(name="music_volume")
     @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Verified')
     async def volume(self, ctx, volume: int):
         """Changes the player's volume"""
 
@@ -103,6 +108,7 @@ class Music(commands.Cog, name='Music'):
 
     @commands.command(name='music_pause')
     @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Verified')
     async def pause(self, ctx):
         self.status = 'paused'
 
@@ -115,22 +121,24 @@ class Music(commands.Cog, name='Music'):
         
     @commands.command(name='music_resume')
     @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Verified')
     async def resume(self, ctx):
-        self.status = 'playing'
-
         voice_client = ctx.message.guild.voice_client
 
         if voice_client.is_paused():
             voice_client.resume()
         else:
             await ctx.send("The bot was not playing anything before this. Use play_song command")
+        
+        self.status = 'playing'
 
     @commands.command(name="music_stop")
     @commands.has_any_role('Petabyte bot manager')
+    @commands.has_role('Verified')
     async def stop(self, ctx):
         """Stops and disconnects the bot from voice"""
 
-        self.status = 'stopped'
+        self.status = 'stop'
         self.now_url = ''
         self.now_playing = ''
 
