@@ -54,11 +54,19 @@ class YTDLSource(discord.PCMVolumeTransformer):
 class Music(commands.Cog, name='Music'):
     def __init__(self, bot):
         self.bot = bot
+        self.now_playing = ""
+        self.volume = 0.5
+        self.status = 'stopped'
+        self.now_url = ''
+
+        ctx.voice_client.source.volume = self.volume
 
     @commands.command(name="music_join")
     @commands.has_any_role('Petabyte bot manager')
     async def join(self, ctx):
         """Joins a voice channel"""
+
+        self.status = 'joined'
 
         channel = discord.utils.find(lambda c: c.name == 'Petabyte Music', ctx.author.guild.channels)
         
@@ -76,12 +84,18 @@ class Music(commands.Cog, name='Music'):
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
             ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
 
+        self.now_playing = player.title
+        self.status = 'playing'
+        self.now_url = 'url'
+
         await ctx.send(f'Now playing: {player.title}')
 
     @commands.command(name="music_volume")
     @commands.has_any_role('Petabyte bot manager')
     async def volume(self, ctx, volume: int):
         """Changes the player's volume"""
+
+        self.volume = volume / 100
 
         if ctx.voice_client is None:
             return await ctx.send("Not connected to a voice channel.")
@@ -92,6 +106,8 @@ class Music(commands.Cog, name='Music'):
     @commands.command(name='music_pause')
     @commands.has_any_role('Petabyte bot manager')
     async def pause(self, ctx):
+        self.status = 'paused'
+
         voice_client = ctx.message.guild.voice_client
         
         if voice_client.is_playing():
@@ -102,6 +118,8 @@ class Music(commands.Cog, name='Music'):
     @commands.command(name='music_resume')
     @commands.has_any_role('Petabyte bot manager')
     async def resume(self, ctx):
+        self.status = 'playing'
+
         voice_client = ctx.message.guild.voice_client
 
         if voice_client.is_paused():
@@ -114,7 +132,32 @@ class Music(commands.Cog, name='Music'):
     async def stop(self, ctx):
         """Stops and disconnects the bot from voice"""
 
+        self.status = 'stopped'
+        self.now_url = ''
+        self.now_playing = ''
+
         await ctx.voice_client.disconnect()
+
+    @commands.command(name="music_status")
+    async def now_playing(self, ctx):
+        if self.now_playing:
+            embed = discord.Embed(
+                title = "Now playing",
+                colour = discord.Colour(0x5865f2),
+                description = self.now_playing,
+                url = self.now_url
+            )
+        else:
+            embed = discord.Embed(
+                title = "Now playing",
+                colour = discord.Colour(0x5865f2),
+                description = "No music is playing now"
+            )
+
+        embed.add_field(name="Volume", value="{}%".format(self.volume * 100), inline=True)
+        embed.add_field(name="Status", value=self.status.capitalize(), inline=True)
+
+        await ctx.send(embed=embed)
 
     @play.before_invoke
     async def ensure_voice(self, ctx):
