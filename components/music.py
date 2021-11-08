@@ -59,8 +59,6 @@ class Music(commands.Cog, name='Music'):
         self.status = 'stopped'
         self.now_url = ''
 
-        ctx.voice_client.source.volume = self.volume
-
     @commands.command(name="music_join")
     @commands.has_any_role('Petabyte bot manager')
     async def join(self, ctx):
