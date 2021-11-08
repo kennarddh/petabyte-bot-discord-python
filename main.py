@@ -58,9 +58,9 @@ async def on_ready():
 
                         await user.add_roles(verifiedRole)
 
-                        await member.create_dm()
-                        await member.dm_channel.send(
-                            f'Hi {member.name}, welcome to Petabyte server!'
+                        await user.create_dm()
+                        await user.dm_channel.send(
+                            f'Hi {user.name}, welcome to Petabyte server!'
                         )
 
 @bot.event
