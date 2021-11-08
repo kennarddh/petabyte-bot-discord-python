@@ -157,8 +157,10 @@ async def verify(ctx):
                 await ctx.author.add_roles(roleToAdd)
 
                 await message.delete()
+                await ctx.message.delete()
             except asyncio.TimeoutError:
                 await message.delete()
+                await ctx.message.delete()
         else:
             await ctx.send('{} already verified'.format(ctx.author.name))
     else:
