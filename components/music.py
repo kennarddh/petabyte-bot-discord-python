@@ -51,7 +51,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options, executable="./ffmpeg/bin/ffmpeg.exe"), data=data)
 
 
-class Music(commands.Cog):
+class Music(commands.Cog, name='Music'):
     def __init__(self, bot):
         self.bot = bot
 
