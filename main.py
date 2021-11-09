@@ -7,7 +7,7 @@ from discord.utils import get
 from dotenv import load_dotenv
 
 # components
-from components import music, error_handler, admin_commands, public_commands
+from components import music, error_handler, admin_commands, public_commands, translate
 
 
 load_dotenv()
@@ -27,6 +27,7 @@ bot.add_cog(music.Music(bot))
 bot.add_cog(error_handler.CommandErrorHandler(bot))
 bot.add_cog(admin_commands.AdminCommands(bot))
 bot.add_cog(public_commands.PublicCommands(bot))
+bot.add_cog(translate.translate.Translate(bot))
 
 @bot.event
 async def on_ready():
