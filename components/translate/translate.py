@@ -4,7 +4,7 @@ from googletrans import Translator
 import discord
 from discord.ext import commands
 
-from .constant import language, country_code
+from .constant import language, country_code, country
 
 
 class Translate(commands.Cog):
@@ -33,7 +33,7 @@ class Translate(commands.Cog):
         else:
             if source.lower() == 'auto':
                 _source = 'auto'
-            elif source.lower() not in list(language.keys()):
+            elif source.lower() not in country:
                 return await ctx.send('Invalid source language')
             elif source.lower() not in country_code:
                 return await ctx.send('Invalid source language')
@@ -46,7 +46,7 @@ class Translate(commands.Cog):
         if not destination.lower():
             _destination = destination
         else:
-            if destination.lower() not in list(language.keys()):
+            if destination.lower() not in country:
                 return await ctx.send('Invalid destination language')
             elif destination.lower() not in country_code:
                 return await ctx.send('Invalid destination language')
