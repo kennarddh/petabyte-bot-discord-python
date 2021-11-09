@@ -321,6 +321,22 @@ class Music(commands.Cog):
         ctx.voice_state.volume = volume / 100
         await ctx.send('Volume of the player set to {}%'.format(volume))
 
+    @commands.command(name='music_now', aliases=['music_current', 'music_playing'])
+    @commands.has_role('Petabyte bot manager')
+    @commands.has_role('Verified')
+    async def _now(self, ctx: commands.Context):
+        """Displays the currently playing song."""
+
+        if self.get_voice_state(ctx).current:
+            await ctx.send(embed=self.get_voice_state(ctx).current.create_embed())
+        else:
+            embed = discord.Embed(
+                title='No music is playing now',
+                color=discord.Color.blurple()
+            )
+
+            await ctx.send(embed=embed)
+
     @commands.command(name='music_pause')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
