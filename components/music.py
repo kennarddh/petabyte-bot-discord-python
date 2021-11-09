@@ -321,14 +321,6 @@ class Music(commands.Cog):
         ctx.voice_state.volume = volume / 100
         await ctx.send('Volume of the player set to {}%'.format(volume))
 
-    @commands.command(name='music_now', aliases=['music_current', 'music_playing'])
-    @commands.has_role('Petabyte bot manager')
-    @commands.has_role('Verified')
-    async def _now(self, ctx: commands.Context):
-        """Displays the currently playing song."""
-
-        await ctx.send(embed=self.get_voice_state(ctx).current.create_embed())
-
     @commands.command(name='music_pause')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
