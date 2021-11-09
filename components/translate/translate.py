@@ -25,11 +25,11 @@ class Translate(commands.Cog):
         _destination = 'en'
         _text = ''
 
-        if len(list(text)) <= 0:
+        if len(' '.join(text[:])) <= 0:
             return await ctx.send('Text is a required argument that is missing.')
 
         if not source.lower():
-            _source = translator.detect(text)
+            _source = translator.detect(' '.join(text[:]))
         else:
             if source.lower() not in language.keys() or source.lower() == 'auto':
                 return await ctx.send('Invalid source language')
@@ -54,6 +54,6 @@ class Translate(commands.Cog):
                 else:
                     _destination = language[destination]
 
-        result = translator.translate(text, dest=_destination, src=_source)
+        result = translator.translate(' '.join(text[:]), dest=_destination, src=_source)
 
         await ctx.message.edit(content=result)
