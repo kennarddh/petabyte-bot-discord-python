@@ -27,13 +27,13 @@ class Translate(commands.Cog):
         if not source:
             _source = translator.detect(text)
         else:
-            if source not in constant.language.keys() or source == 'auto':
+            if source not in language.keys() or source == 'auto':
                 return await ctx.send('Invalid source language')
 
         if not destination:
             _destination = destination
         else:
-            if destination not in constant.language.keys():
+            if destination not in language.keys():
                 return await ctx.send('Invalid destination language')
 
         result = translator.translate(text, dest=_destination, src=_source)
