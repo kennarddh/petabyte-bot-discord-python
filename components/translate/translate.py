@@ -39,7 +39,7 @@ class Translate(commands.Cog):
             else:
                 return await ctx.send('Invalid source language')
 
-        if destination.lower() in list(country.keys()) or destination.lower() in country_code:
+        if destination.lower() in list(language.keys()) or destination.lower() in country_code:
             if destination.lower() in country_code:
                 _destination = destination
             else:
