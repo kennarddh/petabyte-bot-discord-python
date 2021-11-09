@@ -327,7 +327,7 @@ class Music(commands.Cog):
     async def _now(self, ctx: commands.Context):
         """Displays the currently playing song."""
 
-        await ctx.send(embed=ctx.voice_state.current.create_embed())
+        await ctx.send(embed=self.get_voice_state(ctx).current.create_embed())
 
     @commands.command(name='music_pause')
     @commands.has_role('Petabyte bot manager')
