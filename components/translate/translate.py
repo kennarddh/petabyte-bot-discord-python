@@ -4,7 +4,7 @@ from googletrans import Translator
 import discord
 from discord.ext import commands
 
-from constant import language
+from translate.constant import language
 
 
 class Translate(commands.Cog):
