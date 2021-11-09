@@ -13,14 +13,18 @@ class Translate(commands.Cog):
     
     @commands.command(name='translate')
     @commands.has_role('Verified')
-    async def translate(self, ctx, source: str, destination: str, *text):
+    async def translate(self, ctx, destination: str, *text):
         """
         Translate message and edit old message.
 
         Source language detect language use 'auto'.
         """
 
-        print(source, destination, text)
+        print(language.keys())
+        print(country_code)
+        print(destination, text)
+        print(destination.lower() not in language.keys())
+        print(destination.lower() not in country_code)
 
         translator = Translator()
 
@@ -31,18 +35,15 @@ class Translate(commands.Cog):
         if len(' '.join(text[:])) <= 0:
             return await ctx.send('Text is a required argument that is missing.')
 
-        if not destination.lower():
-            _destination = destination
+        if destination.lower() not in language.keys():
+            return await ctx.send('Invalid destination language')
+        elif destination.lower() not in country_code:
+            return await ctx.send('Invalid destination language')
         else:
-            if destination.lower() not in language.keys():
-                return await ctx.send('Invalid destination language')
-            elif destination.lower() not in country_code:
-                return await ctx.send('Invalid destination language')
+            if destination.lower() in country_code:
+                _destination = destination
             else:
-                if destination.lower() in country_code:
-                    _destination = destination
-                else:
-                    _destination = language[destination]
+                _destination = language[destination]
 
         result = translator.translate(' '.join(text[:]), dest=_destination, src=_source)
 
