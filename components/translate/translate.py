@@ -60,7 +60,7 @@ class Translate(commands.Cog):
 
     @commands.command(name='translate_language_support')
     @commands.has_role('Verified')
-    async def language_support(self):
+    async def language_support(self, ctx):
         """Show language support list"""
         response = '```'
 
