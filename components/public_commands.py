@@ -89,8 +89,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
         print(help_data)
         print(all_command)
 
-        print(command_or_category)
-        print(type(command_or_category))
+        print(['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())])
 
         if not command_or_category:
             for category, command_list in help_data.items():
@@ -111,7 +110,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
                         inline=False
                     )
         elif command_or_category:
-            if str(command_or_category).lower() in all_command:
+            if str(command_or_category).lower() in all_command.keys():
                 embed.add_field(
                     name='{}{} {}'.format(
                         self.bot.command_prefix,
@@ -121,7 +120,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     value=all_command[str(command_or_category).lower()]['description'],
                     inline=False
                 )
-            elif str(command_or_category).lower() in list(help_data.keys()):
+            elif str(command_or_category).lower() in ['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())]:
                 embed.add_field(
                     name='{}{} {}'.format(
                         self.bot.command_prefix,
