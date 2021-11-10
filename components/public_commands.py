@@ -82,6 +82,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
         for category, command_list in help_data.items():
             embed.add_field(
                 name='{}'.format(category),
+                value='\u200b',
                 inline=False
             )
 
