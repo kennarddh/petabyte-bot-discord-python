@@ -15,12 +15,10 @@ TOKEN = os.environ['DISCORD_TOKEN']
 
 intents = nextcord.Intents().all()
 
-help_command = commands.DefaultHelpCommand(
-    no_category = 'Commands'
-)
-
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+
+bot.remove_command('help')
 
 # cog
 bot.add_cog(music.Music(bot))

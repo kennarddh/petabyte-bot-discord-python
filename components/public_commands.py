@@ -9,12 +9,12 @@ class PublicCommands(commands.Cog, name='Public commands'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="ping", help="Send Ping Command : '!ping'")
+    @commands.command(name="ping", description="Bot latency")
     @commands.has_role('Verified')
     async def ping(self, ctx):
         await ctx.send('My ping is {}s'.format(round(self.bot.latency, 1)))
 
-    @commands.command(name="where_am_i", help="Prints details of Server")
+    @commands.command(name="where_am_i", description="Prints details of Server")
     @commands.has_role('Verified')
     @commands.guild_only()
     async def where_am_i(self, ctx):
@@ -46,3 +46,39 @@ class PublicCommands(commands.Cog, name='Public commands'):
         embed.add_field(name = "Member Count", value = memberCount, inline = True)
 
         await ctx.send(embed = embed)
+
+    @commands.command(name="help", description='Show help')
+    @commands.has_role('Verified')
+    @commands.guild_only()
+    async def help(self, ctx):
+        """Show help"""
+        
+        embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
+
+        before_catergory = None
+        no_catergory = 'No category'
+
+        for command in self.bot.walk_commands():
+            description = command.description
+
+            if before_catergory != command.cog.qualified_name or before_catergory is None:
+                before_catergory = command.cog.qualified_name if command.cog.qualified_name else no_catergory
+
+                embed.add_field(
+                    name='{}:'.format(before_catergory),
+                    value=before_catergory
+                )
+
+            if not description or description is None or description == '':
+                description = 'No description provided'
+
+            embed.add_field(
+                name='{}{}{}'.format(
+                    self.bot.command_prefix,
+                    command.name,
+                    command.signature if command.signature is not None else ''
+                ),
+                value=description
+            )
+        
+        await ctx.reply(embed=embed)
