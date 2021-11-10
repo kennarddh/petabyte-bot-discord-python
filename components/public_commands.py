@@ -53,32 +53,47 @@ class PublicCommands(commands.Cog, name='Public commands'):
     async def help(self, ctx):
         """Show help"""
         
-        embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
+        before_category = None
+        no_category = 'No category'
 
-        before_catergory = None
-        no_catergory = 'No category'
+        help_data = {}
 
         for command in self.bot.walk_commands():
             description = command.description
 
-            if before_catergory != command.cog.qualified_name or before_catergory is None:
-                before_catergory = command.cog.qualified_name if command.cog.qualified_name else no_catergory
-
-                embed.add_field(
-                    name='{}:'.format(before_catergory),
-                    value=before_catergory
-                )
+            if before_category != command.cog.qualified_name or before_category is None:
+                before_category = command.cog.qualified_name if command.cog is not None else no_category
 
             if not description or description is None or description == '':
                 description = 'No description provided'
 
+            if before_category not in help_data:
+                help_data[before_category] = []
+
+            help_data[before_category].append({
+                'name': command.name,
+                'signature': command.signature if command.signature is not None else '',
+                'description': description
+            })
+
+
+        embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
+
+        for category, command_list in help_data.items():
             embed.add_field(
-                name='{}{}{}'.format(
-                    self.bot.command_prefix,
-                    command.name,
-                    command.signature if command.signature is not None else ''
-                ),
-                value=description
+                name='{}'.format(category),
+                inline=False
             )
-        
+
+            for command in command_list:
+                embed.add_field(
+                    name='{}{}{}'.format(
+                        self.bot.command_prefix,
+                        command['name'],
+                        command['signature']
+                    ),
+                    value=command['description'],
+                    inline=False
+                )
+
         await ctx.reply(embed=embed)
