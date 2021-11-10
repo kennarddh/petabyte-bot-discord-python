@@ -57,3 +57,18 @@ class Translate(commands.Cog):
         embed.add_field(name="Destination Language", value={v: k for k, v in language.items()}[_destination], inline=False)
 
         await ctx.reply(embed = embed)
+
+    @commands.command(name='translate_language_support')
+    @commands.has_role('Verified')
+    async def language_support(self):
+        """Show language support list"""
+        response = '```'
+
+        response += 'country, code'
+
+        for language, country_code in language.items():
+            response += '\n{}, {}'.format(language, country_code)
+
+        response += '\n```'
+
+        ctx.reply(response)
