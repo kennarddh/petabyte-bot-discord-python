@@ -66,8 +66,8 @@ class Translate(commands.Cog):
 
         response += 'country, code'
 
-        for language, country_code in language.items():
-            response += '\n{}, {}'.format(language, country_code)
+        for language_row, country_code in language.items():
+            response += '\n{}, {}'.format(language_row, country_code)
 
         response += '\n```'
 
