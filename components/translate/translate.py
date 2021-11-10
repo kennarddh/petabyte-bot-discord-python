@@ -71,4 +71,4 @@ class Translate(commands.Cog):
 
         response += '\n```'
 
-        ctx.reply(response)
+        await ctx.reply(response)
