@@ -51,7 +51,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
     @commands.command(name="help", description='Show help')
     @commands.has_role('Verified')
     @commands.guild_only()
-    async def help(self, ctx, command: Optional[str]):
+    async def help(self, ctx, command_or_category: Optional[str]):
         """Show help"""
 
         embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
@@ -89,10 +89,10 @@ class PublicCommands(commands.Cog, name='Public commands'):
         print(help_data)
         print(all_command)
 
-        print(command)
-        print(type(command))
+        print(command_or_category)
+        print(type(command_or_category))
 
-        if not command:
+        if not command_or_category:
             for category, command_list in help_data.items():
                 embed.add_field(
                     name='{}'.format(category),
@@ -104,31 +104,31 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     embed.add_field(
                         name='{}{} {}'.format(
                             self.bot.command_prefix,
-                            command['name'],
-                            command['signature']
+                            command_or_category['name'],
+                            command_or_category['signature']
                         ),
-                        value=command['description'],
+                        value=command_or_category['description'],
                         inline=False
                     )
-        elif command:
-            if str(command).lower() in all_command:
+        elif command_or_category:
+            if str(command_or_category).lower() in all_command:
                 embed.add_field(
                     name='{}{} {}'.format(
                         self.bot.command_prefix,
-                        all_command[str(command).lower()]['name'],
-                        all_command[str(command).lower()]['signature']
+                        all_command[str(command_or_category).lower()]['name'],
+                        all_command[str(command_or_category).lower()]['signature']
                     ),
-                    value=all_command[str(command).lower()]['description'],
+                    value=all_command[str(command_or_category).lower()]['description'],
                     inline=False
                 )
-            elif str(command).lower() in list(help_data.keys()):
+            elif str(command_or_category).lower() in list(help_data.keys()):
                 embed.add_field(
                     name='{}{} {}'.format(
                         self.bot.command_prefix,
-                        help_data[str(command).lower()]['name'],
-                        help_data[str(command).lower()]['signature']
+                        help_data[str(command_or_category).lower()]['name'],
+                        help_data[str(command_or_category).lower()]['signature']
                     ),
-                    value=help_data[str(command).lower()]['description'],
+                    value=help_data[str(command_or_category).lower()]['description'],
                     inline=False
                 )
             else:
