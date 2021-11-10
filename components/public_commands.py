@@ -55,6 +55,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
         """Show help"""
 
         print(command)
+        print(type(command))
 
         embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
 
@@ -107,24 +108,24 @@ class PublicCommands(commands.Cog, name='Public commands'):
                         inline=False
                     )
         elif command is not None:
-            if command.lower() in all_command:
+            if str(command).lower() in all_command:
                 embed.add_field(
                     name='{}{} {}'.format(
                         self.bot.command_prefix,
-                        all_command[command.lower()]['name'],
-                        all_command[command.lower()]['signature']
+                        all_command[str(command).lower()]['name'],
+                        all_command[str(command).lower()]['signature']
                     ),
-                    value=all_command[command.lower()]['description'],
+                    value=all_command[str(command).lower()]['description'],
                     inline=False
                 )
-            elif command.lower() in list(help_data.keys()):
+            elif str(command).lower() in list(help_data.keys()):
                 embed.add_field(
                     name='{}{} {}'.format(
                         self.bot.command_prefix,
-                        help_data[command.lower()]['name'],
-                        help_data[command.lower()]['signature']
+                        help_data[str(command).lower()]['name'],
+                        help_data[str(command).lower()]['signature']
                     ),
-                    value=help_data[command.lower()]['description'],
+                    value=help_data[str(command).lower()]['description'],
                     inline=False
                 )
             else:
