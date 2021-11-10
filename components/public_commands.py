@@ -65,6 +65,10 @@ class PublicCommands(commands.Cog, name='Public commands'):
         for command in self.bot.walk_commands():
             description = command.description
 
+            print(command)
+            print(command.cog)
+            print(command.cog.qualified_names)
+
             if before_category != '_'.join([i for i in str(command.cog.qualified_names.lower()).split()]) or before_category is None:
                 print(before_category)
                 print('_'.join([i for i in str(command.cog.qualified_names.lower()).split()]))
