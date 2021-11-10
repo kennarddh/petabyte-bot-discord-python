@@ -5,7 +5,6 @@ import nextcord
 from nextcord.ext import commands
 
 from .constant import language, country_code
-from .language_support_dropdown import DropdownView
 
 
 class Translate(commands.Cog):
@@ -63,5 +62,13 @@ class Translate(commands.Cog):
     @commands.has_role('Verified')
     async def language_support(self, ctx):
         """Show language support list"""
-        
-        await ctx.reply(view=DropdownView())
+        response = '```'
+
+        response += 'country, code'
+
+        for language_row, country_code in language.items():
+            response += '\n{}, {}'.format(language_row, country_code)
+
+        response += '\n```'
+
+        await ctx.reply(response)
