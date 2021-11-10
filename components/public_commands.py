@@ -72,7 +72,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
                 description = 'No description provided'
 
             if before_category not in help_data:
-                help_data[before_category] = []
+                help_data['_'.join([i.lower() for i in before_category.split()])] = []
 
             help_data['_'.join([i.lower() for i in before_category.split()])].append({
                 'name': command.name,
