@@ -1,8 +1,8 @@
 import asyncio
 
-import discord
+import nextcord
 
-from discord.ext import commands
+from nextcord.ext import commands
 
 
 class PublicCommands(commands.Cog, name='Public commands'):
@@ -27,16 +27,16 @@ class PublicCommands(commands.Cog, name='Public commands'):
         
 
         if desc:
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title = ctx.guild.name + " Server Information",
                 description = desc,
-                color = discord.Color.blue()
+                color = nextcord.Color.blue()
             )
         else:
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title = ctx.guild.name + " Server Information",
                 description = "No description",
-                color = discord.Color.blue()
+                color = nextcord.Color.blue()
             )
 
 

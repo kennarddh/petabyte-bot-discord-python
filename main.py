@@ -1,9 +1,9 @@
 import os
 import asyncio
 
-import discord
-from discord.ext import commands, tasks
-from discord.utils import get
+import nextcord
+from nextcord.ext import commands, tasks
+from nextcord.utils import get
 from dotenv import load_dotenv
 
 # components
@@ -13,7 +13,7 @@ from components import music, error_handler, admin_commands, public_commands, tr
 load_dotenv()
 TOKEN = os.environ['DISCORD_TOKEN']
 
-intents = discord.Intents().all()
+intents = nextcord.Intents().all()
 
 help_command = commands.DefaultHelpCommand(
     no_category = 'Commands'
@@ -37,9 +37,9 @@ async def on_ready():
             f'{guild.name}(id: {guild.id})'
         )
 
-        ownerRole = discord.utils.find(lambda r: r.name == 'Owner', guild.roles)
-        verifiedRole = discord.utils.find(lambda r: r.name == 'Verified', guild.roles)
-        verifyChannel = discord.utils.get(guild.channels, name="verify")
+        ownerRole = nextcord.utils.find(lambda r: r.name == 'Owner', guild.roles)
+        verifiedRole = nextcord.utils.find(lambda r: r.name == 'Verified', guild.roles)
+        verifyChannel = nextcord.utils.get(guild.channels, name="verify")
         confirmEmoji = '\U00002705'
         
         await verifyChannel.purge(limit=100)
@@ -53,7 +53,7 @@ async def on_ready():
             if reaction.emoji == confirmEmoji:
                 if ownerRole not in user.roles:
                     if verifiedRole not in user.roles:
-                        channel = discord.utils.get(guild.channels, name="welcome")
+                        channel = nextcord.utils.get(guild.channels, name="welcome")
 
                         await channel.send(f'Hi {user.name}, welcome to Petabyte server!')
 

@@ -1,8 +1,8 @@
 import asyncio
 
-import discord
+import nextcord
 
-from discord.ext import commands
+from nextcord.ext import commands
 
 
 class AdminCommands(commands.Cog, name='Admin commands'):
@@ -12,8 +12,8 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     @commands.command(name="mute", help="Mute Member Command : '!mute {member}'")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
-    async def mute(self, ctx, member : discord.Member):
-        ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
+    async def mute(self, ctx, member : nextcord.Member):
+        ownerRole = nextcord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
         if ownerRole not in member.roles:
             await member.edit(mute=True)
             
@@ -24,8 +24,8 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     @commands.command(name="unmute", help="Unmute Member Command : '!unmute {member}'")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
-    async def unmute(self, ctx, member : discord.Member):
-        ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
+    async def unmute(self, ctx, member : nextcord.Member):
+        ownerRole = nextcord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
         if ownerRole not in member.roles:
             await member.edit(mute=False)
 
@@ -42,8 +42,8 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     @commands.command(name="resetNick", help="Reset Member Nickname Command : '!resetNick {@Member}'")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
-    async def resetNick(self, ctx, member : discord.Member):
-        ownerRole = discord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
+    async def resetNick(self, ctx, member : nextcord.Member):
+        ownerRole = nextcord.utils.find(lambda r: r.name == 'Owner', ctx.message.guild.roles)
         if ownerRole not in member.roles:
             memberNick = member.nick
 

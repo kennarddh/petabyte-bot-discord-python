@@ -1,8 +1,8 @@
 import asyncio
 from googletrans import Translator
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from .constant import language, country_code
 
@@ -49,7 +49,7 @@ class Translate(commands.Cog):
 
         result = translator.translate(' '.join(text[:]), dest=_destination, src=_source)
 
-        embed = discord.Embed(color=discord.Colour.blurple())
+        embed = nextcord.Embed(color=nextcord.Colour.blurple())
 
         embed.add_field(name="Original", value=' '.join(text[:]), inline=False)
         embed.add_field(name="Result", value=result.text, inline=False)

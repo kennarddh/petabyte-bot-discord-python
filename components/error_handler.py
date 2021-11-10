@@ -1,7 +1,7 @@
-import discord
+import nextcord
 import traceback
 import sys
-from discord.ext import commands
+from nextcord.ext import commands
 
 
 class CommandErrorHandler(commands.Cog):
@@ -45,7 +45,7 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.NoPrivateMessage):
             try:
                 await ctx.author.send(f'{ctx.command} can not be used in Private Messages.')
-            except discord.HTTPException:
+            except nextcord.HTTPException:
                 pass
 
         # For this error example we check to see where it came from...

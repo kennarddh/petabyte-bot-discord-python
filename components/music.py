@@ -4,10 +4,10 @@ import itertools
 import math
 import random
 
-import discord
+import nextcord
 import youtube_dl
 from async_timeout import timeout
-from discord.ext import commands
+from nextcord.ext import commands
 
 # Silence useless bug reports messages
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -21,7 +21,7 @@ class YTDLError(Exception):
     pass
 
 
-class YTDLSource(discord.PCMVolumeTransformer):
+class YTDLSource(nextcord.PCMVolumeTransformer):
     YTDL_OPTIONS = {
         'format': 'bestaudio/best',
         'extractaudio': True,
@@ -45,7 +45,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 0.5):
+    def __init__(self, ctx: commands.Context, source: nextcord.FFmpegPCMAudio, *, data: dict, volume: float = 0.5):
         super().__init__(source, volume)
 
         self.requester = ctx.author
@@ -109,7 +109,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 except IndexError:
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
 
-        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
+        return cls(ctx, nextcord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
 
     @staticmethod
     def parse_duration(duration: int):
@@ -138,9 +138,9 @@ class Song:
         self.requester = source.requester
 
     def create_embed(self):
-        embed = (discord.Embed(title='Now playing',
+        embed = (nextcord.Embed(title='Now playing',
                                description='```css\n{0.source.title}\n```'.format(self),
-                               color=discord.Color.blurple())
+                               color=nextcord.Color.blurple())
                  .add_field(name='Duration', value=self.source.duration)
                  .add_field(name='Requested by', value=self.requester.mention)
                  .add_field(name='Uploader', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self))
@@ -289,7 +289,7 @@ class Music(commands.Cog):
     async def _join(self, ctx: commands.Context):
         """Joins a voice channel."""
 
-        destination = discord.utils.find(lambda c: c.name == 'Petabyte Music', ctx.author.guild.channels)
+        destination = nextcord.utils.find(lambda c: c.name == 'Petabyte Music', ctx.author.guild.channels)
         
         ctx.voice_state.voice = await destination.connect()
 
@@ -330,9 +330,9 @@ class Music(commands.Cog):
         if self.get_voice_state(ctx).current:
             await ctx.send(embed=self.get_voice_state(ctx).current.create_embed())
         else:
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title='No music is playing now',
-                color=discord.Color.blurple()
+                color=nextcord.Color.blurple()
             )
 
             await ctx.send(embed=embed)
@@ -426,7 +426,7 @@ class Music(commands.Cog):
         for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
             queue += '`{0}.` [**{1.source.title}**]({1.source.url})\n'.format(i + 1, song)
 
-        embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
+        embed = (nextcord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                  .set_footer(text='Viewing page {}/{}'.format(page, pages)))
         await ctx.send(embed=embed)
 
