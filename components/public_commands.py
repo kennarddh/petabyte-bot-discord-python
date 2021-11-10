@@ -1,4 +1,5 @@
 import asyncio
+from typing import Optional
 
 import nextcord
 
@@ -82,13 +83,13 @@ class PublicCommands(commands.Cog, name='Public commands'):
         for category, command_list in help_data.items():
             embed.add_field(
                 name='{}'.format(category),
-                value='\u200b',
+                value='',
                 inline=False
             )
 
             for command in command_list:
                 embed.add_field(
-                    name='{}{}{}'.format(
+                    name='{}{} {}'.format(
                         self.bot.command_prefix,
                         command['name'],
                         command['signature']
@@ -96,5 +97,11 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     value=command['description'],
                     inline=False
                 )
+            
+            embed.add_field(
+                name='\u200b',
+                value='',
+                inline=False
+            )
 
         await ctx.reply(embed=embed)
