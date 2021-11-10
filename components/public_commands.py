@@ -111,25 +111,39 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     )
         elif command_or_category:
             if str(command_or_category).lower() in all_command.keys():
-                embed.add_field(
-                    name='{}{} {}'.format(
-                        self.bot.command_prefix,
-                        all_command[str(command_or_category).lower()]['name'],
-                        all_command[str(command_or_category).lower()]['signature']
-                    ),
-                    value=all_command[str(command_or_category).lower()]['description'],
-                    inline=False
-                )
+                try:
+                    embed.add_field(
+                        name='{}{} {}'.format(
+                            self.bot.command_prefix,
+                            all_command[str(command_or_category).lower()]['name'],
+                            all_command[str(command_or_category).lower()]['signature']
+                        ),
+                        value=all_command[str(command_or_category).lower()]['description'],
+                        inline=False
+                    )
+                except KeyError:
+                    embed.add_field(
+                        name='Error',
+                        value='Invalid command or category',
+                        inline=False
+                    )
             elif str(command_or_category).lower() in ['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())]:
-                embed.add_field(
-                    name='{}{} {}'.format(
-                        self.bot.command_prefix,
-                        help_data[str(command_or_category).lower()]['name'],
-                        help_data[str(command_or_category).lower()]['signature']
-                    ),
-                    value=help_data[str(command_or_category).lower()]['description'],
-                    inline=False
-                )
+                try:
+                    embed.add_field(
+                        name='{}{} {}'.format(
+                            self.bot.command_prefix,
+                            ['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())][str(command_or_category).lower()]['name'],
+                            ['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())][str(command_or_category).lower()]['signature']
+                        ),
+                        value=help_data[str(command_or_category).lower()]['description'],
+                        inline=False
+                    )
+                except KeyError:
+                    embed.add_field(
+                        name='Error',
+                        value='Invalid command or category',
+                        inline=False
+                    )
             else:
                 embed.add_field(
                     name='Error',
