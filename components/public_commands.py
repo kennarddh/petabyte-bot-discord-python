@@ -74,7 +74,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
             if before_category not in help_data:
                 help_data[before_category] = []
 
-            help_data[before_category].append({
+            help_data['_'.join([i.lower() for i in before_category.split()])].append({
                 'name': command.name,
                 'signature': command.signature if command.signature is not None else '',
                 'description': description
@@ -122,23 +122,28 @@ class PublicCommands(commands.Cog, name='Public commands'):
                         inline=False
                     )
                 except KeyError:
+                    embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
+
                     embed.add_field(
                         name='Error',
                         value='Invalid command or category',
                         inline=False
                     )
-            elif str(command_or_category).lower() in ['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())]:
+            elif str(command_or_category).lower() in list(help_data.keys()):
                 try:
-                    embed.add_field(
-                        name='{}{} {}'.format(
-                            self.bot.command_prefix,
-                            ['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())][str(command_or_category).lower()]['name'],
-                            ['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())][str(command_or_category).lower()]['signature']
-                        ),
-                        value=help_data[str(command_or_category).lower()]['description'],
-                        inline=False
-                    )
+                    for command in help_data[str(command_or_category).lower()]:
+                        embed.add_field(
+                            name='{}{} {}'.format(
+                                self.bot.command_prefix,
+                                command['name'],
+                                command['signature']
+                            ),
+                            value=command['description'],
+                            inline=False
+                        )
                 except KeyError:
+                    embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
+
                     embed.add_field(
                         name='Error',
                         value='Invalid command or category',
