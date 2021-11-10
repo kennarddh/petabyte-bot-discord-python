@@ -12,6 +12,8 @@ class Dropdown(nextcord.ui.Select):
             nextcord.SelectOption(label=country_code_row, description=country) for country, country_code_row in language.items()
         ]
 
+        print(selectOptions)
+
         super().__init__(placeholder='Country list', min_values=1, max_values=1, options=selectOptions)
 
 class DropdownView(nextcord.ui.View):
