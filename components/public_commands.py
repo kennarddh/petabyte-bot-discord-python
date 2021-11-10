@@ -65,8 +65,10 @@ class PublicCommands(commands.Cog, name='Public commands'):
         for command in self.bot.walk_commands():
             description = command.description
 
-            if before_category != '_'.join([i.lower() for i in command.cog.qualified_names.split()]) or before_category is None:
-                before_category = '_'.join([i.lower() for i in command.cog.qualified_names.split()]) if command.cog is not None else no_category
+            if before_category != '_'.join([i for i in str(command.cog.qualified_names.lower()).split()]) or before_category is None:
+                print(before_category)
+                print('_'.join([i for i in str(command.cog.qualified_names.lower()).split()]))
+                before_category = '_'.join([i for i in str(command.cog.qualified_names.lower()).split()]) if command.cog is not None else no_category
 
             if not description or description is None or description == '':
                 description = 'No description provided'
