@@ -64,4 +64,4 @@ class Translate(commands.Cog):
     async def language_support(self, ctx):
         """Show language support list"""
         
-        ctx.reply(view=DropdownView())
+        await ctx.reply(view=DropdownView())
