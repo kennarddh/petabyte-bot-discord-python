@@ -54,6 +54,8 @@ class PublicCommands(commands.Cog, name='Public commands'):
     async def help(self, ctx, command: Optional[str]):
         """Show help"""
 
+        print(command)
+
         embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
 
         before_category = None
@@ -86,7 +88,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
                 'description': description
             }
             
-        if not command:
+        if command is None:
             for category, command_list in help_data.items():
                 embed.add_field(
                     name='{}'.format(category),
@@ -104,7 +106,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
                         value=command['description'],
                         inline=False
                     )
-        elif command:
+        elif command is not None:
             if command.lower() in all_command:
                 embed.add_field(
                     name='{}{} {}'.format(
