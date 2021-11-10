@@ -51,9 +51,9 @@ class Translate(commands.Cog):
 
         embed = discord.Embed(color=discord.Colour.blurple())
 
-        embed.add_field(name="Original", value=' '.join(text[:]))
-        embed.add_field(name="Result", value=result)
-        embed.add_field(name="Source Language", value=_source)
-        embed.add_field(name="Destination Language", value=_destination)
+        embed.add_field(name="Original", value=' '.join(text[:]), inline=False)
+        embed.add_field(name="Result", value=result.text, inline=False)
+        embed.add_field(name="Source Language", value=_source, inline=False)
+        embed.add_field(name="Destination Language", value=_destination, inline=False)
 
         await ctx.reply(embed = embed)
