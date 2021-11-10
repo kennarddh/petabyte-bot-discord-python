@@ -51,13 +51,16 @@ class PublicCommands(commands.Cog, name='Public commands'):
     @commands.command(name="help", description='Show help')
     @commands.has_role('Verified')
     @commands.guild_only()
-    async def help(self, ctx):
+    async def help(self, ctx, command: Optional[str]):
         """Show help"""
-        
+
+        embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
+
         before_category = None
         no_category = 'No category'
 
         help_data = {}
+        all_command = {}
 
         for command in self.bot.walk_commands():
             description = command.description
@@ -77,24 +80,55 @@ class PublicCommands(commands.Cog, name='Public commands'):
                 'description': description
             })
 
+            all_command[command.name.lower()] = {
+                'name': command.name,
+                'signature': command.signature if command.signature is not None else '',
+                'description': description
+            }
+            
+        if not command:
+            for category, command_list in help_data.items():
+                embed.add_field(
+                    name='{}'.format(category),
+                    value='\u200b',
+                    inline=False
+                )
 
-        embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
-
-        for category, command_list in help_data.items():
-            embed.add_field(
-                name='{}'.format(category),
-                value='\u200b',
-                inline=False
-            )
-
-            for command in command_list:
+                for command in command_list:
+                    embed.add_field(
+                        name='{}{} {}'.format(
+                            self.bot.command_prefix,
+                            command['name'],
+                            command['signature']
+                        ),
+                        value=command['description'],
+                        inline=False
+                    )
+        elif command:
+            if command.lower() in all_command:
                 embed.add_field(
                     name='{}{} {}'.format(
                         self.bot.command_prefix,
-                        command['name'],
-                        command['signature']
+                        all_command[command.lower()]['name'],
+                        all_command[command.lower()]['signature']
                     ),
-                    value=command['description'],
+                    value=all_command[command.lower()]['description'],
+                    inline=False
+                )
+            elif command.lower() in list(help_data.keys()):
+                embed.add_field(
+                    name='{}{} {}'.format(
+                        self.bot.command_prefix,
+                        help_data[command.lower()]['name'],
+                        help_data[command.lower()]['signature']
+                    ),
+                    value=help_data[command.lower()]['description'],
+                    inline=False
+                )
+            else:
+                embed.add_field(
+                    name='Error',
+                    value='Invalid command or category',
                     inline=False
                 )
 
