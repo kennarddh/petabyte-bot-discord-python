@@ -104,10 +104,10 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     embed.add_field(
                         name='{}{} {}'.format(
                             self.bot.command_prefix,
-                            command_or_category['name'],
-                            command_or_category['signature']
+                            command['name'],
+                            command['signature']
                         ),
-                        value=command_or_category['description'],
+                        value=command['description'],
                         inline=False
                     )
         elif command_or_category:
