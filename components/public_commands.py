@@ -22,9 +22,8 @@ class PublicCommands(commands.Cog, name='Public commands'):
         region = str(ctx.guild.region)
         guild_id = str(ctx.guild.id)
         memberCount = str(ctx.guild.member_count)
-        icon = str(ctx.guild.icon_url)
+        icon = str(ctx.guild.icon)
         desc = ctx.guild.description
-        
 
         if desc:
             embed = nextcord.Embed(
