@@ -83,7 +83,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
         for category, command_list in help_data.items():
             embed.add_field(
                 name='{}'.format(category),
-                value='',
+                value='\u200b',
                 inline=False
             )
 
@@ -97,11 +97,5 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     value=command['description'],
                     inline=False
                 )
-            
-            embed.add_field(
-                name='\u200b',
-                value='',
-                inline=False
-            )
 
         await ctx.reply(embed=embed)
