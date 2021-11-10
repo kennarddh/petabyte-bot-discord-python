@@ -66,8 +66,8 @@ class PublicCommands(commands.Cog, name='Public commands'):
             description = command.description
 
             print(command)
-            print(command.cog)
-            print(command.cog.qualified_names)
+            print(command.cog.cog)
+            print(command.cog.cog.qualified_names)
 
             if before_category != '_'.join([i for i in str(command.cog.qualified_names.lower()).split()]) or before_category is None:
                 print(before_category)
