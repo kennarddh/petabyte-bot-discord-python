@@ -284,7 +284,6 @@ class Music(commands.Cog):
         await ctx.send('An error occurred: {}'.format(str(error)))
 
     @commands.command(name='music_join', invoke_without_subcommand=True)
-    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _join(self, ctx: commands.Context):
         """Joins a voice channel."""
@@ -322,7 +321,6 @@ class Music(commands.Cog):
         await ctx.send('Volume of the player set to {}%'.format(volume))
 
     @commands.command(name='music_now', aliases=['music_current', 'music_playing'])
-    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _now(self, ctx: commands.Context):
         """Displays the currently playing song."""
@@ -377,7 +375,6 @@ class Music(commands.Cog):
             await ctx.message.add_reaction('⏹')
 
     @commands.command(name='music_skip')
-    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _skip(self, ctx: commands.Context):
         """Vote to skip a song. The requester can automatically skip.
@@ -406,7 +403,6 @@ class Music(commands.Cog):
             await ctx.send('You have already voted to skip this song.')
 
     @commands.command(name='music_queue')
-    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
         """Shows the player's queue.
@@ -455,7 +451,6 @@ class Music(commands.Cog):
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='music_play')
-    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _play(self, ctx: commands.Context, *, search: str):
         """Plays a song.
