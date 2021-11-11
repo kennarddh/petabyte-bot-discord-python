@@ -78,7 +78,7 @@ class Database:
                 'id': now_user[2]
             })
         else:
-            self.cursor.execute('UPDATE levels SET experience = %(experience)s WHERE id = %(id)s', (
+            self.cursor.execute('UPDATE levels SET experience = %(experience)s WHERE id = %(id)s', {
                 'experience': check_level_up_result['experience'],
                 'id': now_user[2]
             })
