@@ -142,9 +142,9 @@ class PublicCommands(commands.Cog, name='Public commands'):
 
         await ctx.reply(embed=embed)
 
-    @commands.command(name="bot_stats", description='Show bot stats')
+    @commands.command(name="petabyte_bot_stats", description='Show bot stats')
     @commands.has_role('Verified')
-    async def bot_stats(self, ctx):
+    async def petabyte_bot_stats(self, ctx):
         """Show bot stats"""
         embed = nextcord.Embed(title='My Stats!')
 
