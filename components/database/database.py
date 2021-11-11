@@ -138,6 +138,6 @@ class Database:
         })
 
         if user:
-            return False
-        else:
             return True
+        else:
+            return False
