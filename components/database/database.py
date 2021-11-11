@@ -84,10 +84,17 @@ class Database:
         print(guild_id)
         print(points)
 
-        now_user = self.cursor.execute('SELECT levels.level, levels.experience, levels.id FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
+        print('SELECT levels.level, levels.experience, levels.id FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s' % {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
-        }).fetchone()
+        })
+
+        self.cursor.execute('SELECT levels.level, levels.experience, levels.id FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
+            'discord_user_id': int(discord_user_id),
+            'guild_id': int(guild_id)
+        })
+        
+        now_user = self.cursor.fetchone()
 
         check_level_up_result = self.check_level_up(now_level=now_user[0], now_experience=now_user[1])
 
@@ -114,7 +121,9 @@ class Database:
         user = self.cursor.execute('SELECT users.id, users.discord_user_id, users.name, users.guild_id, levels.level, levels.experience FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
-        }).fetchone()
+        })
+        
+        user = self.cursor.fetchone()
 
         if user is None:
             return False
