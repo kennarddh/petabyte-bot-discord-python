@@ -11,7 +11,7 @@ class Translate(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
     
-    @commands.command(name='translate')
+    @commands.command(name='translate', description="Translate message and edit old message. Source language detect language use 'auto'.")
     @commands.has_role('Verified')
     async def translate(self, ctx, source: str, destination: str, *text):
         """
@@ -58,7 +58,7 @@ class Translate(commands.Cog):
 
         await ctx.reply(embed = embed)
 
-    @commands.command(name='translate_language_support')
+    @commands.command(name='translate_language_support', description='Show language support list')
     @commands.has_role('Verified')
     async def language_support(self, ctx):
         """Show language support list"""

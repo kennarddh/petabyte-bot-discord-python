@@ -9,7 +9,7 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="mute", help="Mute Member Command : '!mute {member}'")
+    @commands.command(name="mute", description="Mute Member")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def mute(self, ctx, member : nextcord.Member):
@@ -21,7 +21,7 @@ class AdminCommands(commands.Cog, name='Admin commands'):
         else:
             await ctx.send("Can't modify owner")
 
-    @commands.command(name="unmute", help="Unmute Member Command : '!unmute {member}'")
+    @commands.command(name="unmute", description="Unmute Member")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def unmute(self, ctx, member : nextcord.Member):
@@ -33,13 +33,13 @@ class AdminCommands(commands.Cog, name='Admin commands'):
         else:
             await ctx.send("Can't modify owner")
 
-    @commands.command(name="purge", help="Purge channel with limit Command : '!purgeChannel {Limit(int)}'")
+    @commands.command(name="purge", description="Purge channel with limit")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def purge(self, ctx, limit : int):
         await ctx.channel.purge(limit=limit)
 
-    @commands.command(name="resetNick", help="Reset Member Nickname Command : '!resetNick {@Member}'")
+    @commands.command(name="reset_nick", description="Reset Member Nickname")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def resetNick(self, ctx, member : nextcord.Member):
@@ -57,7 +57,7 @@ class AdminCommands(commands.Cog, name='Admin commands'):
         else:
             await ctx.send("Can't modify owner")
 
-    @commands.command(name="resetAllNick", help="Reset All Member Nickname In Server Command : '!resetAllNick'")
+    @commands.command(name="reset_all_nick", description="Reset All Member Nickname In Server")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def resetAllNick(self, ctx):

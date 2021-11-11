@@ -283,7 +283,7 @@ class Music(commands.Cog):
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.send('An error occurred: {}'.format(str(error)))
 
-    @commands.command(name='music_join', invoke_without_subcommand=True)
+    @commands.command(name='music_join', description='Joins a voice channel.', invoke_without_subcommand=True)
     @commands.has_role('Verified')
     async def _join(self, ctx: commands.Context):
         """Joins a voice channel."""
@@ -293,7 +293,7 @@ class Music(commands.Cog):
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='music_leave', aliases=['music_disconnect'])
-    @commands.has_role('Petabyte bot manager')
+    @commands.has_role('Petabyte bot manager', description='Clears the queue and leaves the voice channel.')
     @commands.has_role('Verified')
     @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
@@ -305,7 +305,7 @@ class Music(commands.Cog):
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
-    @commands.command(name='music_volume')
+    @commands.command(name='music_volume', description='Sets the volume of the player.')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _volume(self, ctx: commands.Context, *, volume: int):
@@ -320,7 +320,7 @@ class Music(commands.Cog):
         ctx.voice_state.volume = volume / 100
         await ctx.send('Volume of the player set to {}%'.format(volume))
 
-    @commands.command(name='music_now', aliases=['music_current', 'music_playing'])
+    @commands.command(name='music_now', aliases=['music_current', 'music_playing'], description='Displays the currently playing song.')
     @commands.has_role('Verified')
     async def _now(self, ctx: commands.Context):
         """Displays the currently playing song."""
@@ -335,7 +335,7 @@ class Music(commands.Cog):
 
             await ctx.send(embed=embed)
 
-    @commands.command(name='music_pause')
+    @commands.command(name='music_pause', description='Pauses the currently playing song.')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     @commands.has_permissions(manage_guild=True)
@@ -348,7 +348,7 @@ class Music(commands.Cog):
             ctx.voice_state.voice.pause()
             await ctx.message.add_reaction('⏯')
 
-    @commands.command(name='music_resume')
+    @commands.command(name='music_resume', description='Resumes a currently paused song.')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     @commands.has_permissions(manage_guild=True)
@@ -361,7 +361,7 @@ class Music(commands.Cog):
             ctx.voice_state.voice.resume()
             await ctx.message.add_reaction('⏯')
 
-    @commands.command(name='music_stop')
+    @commands.command(name='music_stop', description='Stops playing song and clears the queue.')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     @commands.has_permissions(manage_guild=True)
@@ -374,7 +374,7 @@ class Music(commands.Cog):
             ctx.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')
 
-    @commands.command(name='music_skip')
+    @commands.command(name='music_skip', description='Vote to skip a song. The requester can automatically skip. 3 skip votes are needed for the song to be skipped.')
     @commands.has_role('Verified')
     async def _skip(self, ctx: commands.Context):
         """Vote to skip a song. The requester can automatically skip.
@@ -402,7 +402,7 @@ class Music(commands.Cog):
         else:
             await ctx.send('You have already voted to skip this song.')
 
-    @commands.command(name='music_queue')
+    @commands.command(name='music_queue', description="Shows the player's queue.")
     @commands.has_role('Verified')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
         """Shows the player's queue.
@@ -426,7 +426,7 @@ class Music(commands.Cog):
                  .set_footer(text='Viewing page {}/{}'.format(page, pages)))
         await ctx.send(embed=embed)
 
-    @commands.command(name='music_shuffle')
+    @commands.command(name='music_shuffle', description='Shuffles the queue.')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _shuffle(self, ctx: commands.Context):
@@ -438,7 +438,7 @@ class Music(commands.Cog):
         ctx.voice_state.songs.shuffle()
         await ctx.message.add_reaction('✅')
 
-    @commands.command(name='music_remove')
+    @commands.command(name='music_remove', description='Removes a song from the queue at a given index.')
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def _remove(self, ctx: commands.Context, index: int):
@@ -450,7 +450,7 @@ class Music(commands.Cog):
         ctx.voice_state.songs.remove(index - 1)
         await ctx.message.add_reaction('✅')
 
-    @commands.command(name='music_play')
+    @commands.command(name='music_play', description='Plays a song. If there are songs in the queue, this will be queued until the other songs finished playing.')
     @commands.has_role('Verified')
     async def _play(self, ctx: commands.Context, *, search: str):
         """Plays a song.
