@@ -83,7 +83,7 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def lock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
-        verified_role = discord.utils.get(ctx.guild.roles, name="Verified")
+        verified_role = nextcord.utils.get(ctx.guild.roles, name="Verified")
 
         if setting == '--server':
             for channel in ctx.guild.channels:
@@ -101,7 +101,7 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def unlock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
-        verified_role = discord.utils.get(ctx.guild.roles, name="Verified")
+        verified_role = nextcord.utils.get(ctx.guild.roles, name="Verified")
         
         if setting == '--server':
             for channel in ctx.guild.channels:
