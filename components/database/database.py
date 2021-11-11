@@ -110,9 +110,9 @@ class Database:
         user = self.cursor.execute('SELECT * FROM users WHERE discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
-        })
+        }).fetchall()
 
-        if user is None:
+        if user:
             return False
         else:
             return True
