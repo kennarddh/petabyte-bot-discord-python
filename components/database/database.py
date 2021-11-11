@@ -1,8 +1,10 @@
-import sqlite3
+import psycopg2
 
 class Database:
     def __init__(self):
-        self.connection = sqlite3.connect('data/data.db')
+        DATABASE_URL = os.environ['DATABASE_URL']
+
+        self.connection = psycopg2.connect(DATABASE_URL, sslmode='require')
 
         self.cursor = self.connection.cursor()
 
@@ -37,11 +39,11 @@ class Database:
         Return inserted user id.
         """
         
-        self.cursor.execute('INSERT INTO users(discord_user_id, name, guild_id) VALUES(?,?,?)', (discord_user_id, name, guild_id))
+        self.cursor.execute('INSERT INTO users(discord_user_id, name, guild_id) VALUES(%s, %s, %s)', (discord_user_id, name, guild_id))
 
         new_user_id = self.cursor.lastrowid
 
-        self.cursor.execute('INSERT INTO levels(user_id, level, experience) VALUES(?,?,?)', (new_user_id, 0, 1))
+        self.cursor.execute('INSERT INTO levels(user_id, level, experience) VALUES(%s, %s, %s)', (new_user_id, 0, 1))
 
         self.commit()
 
@@ -53,18 +55,18 @@ class Database:
         
         Return check_level_up_result.
         """
-        now_user = self.cursor.execute('SELECT levels.level, levels.experience, levels.id FROM levels JOIN users on users.id = levels.user_id WHERE users.discord_user_id = ? AND users.guild_id = ?', (discord_user_id, guild_id)).fetchone()
+        now_user = self.cursor.execute('SELECT levels.level, levels.experience, levels.id FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %s AND users.guild_id = %s', (discord_user_id, guild_id)).fetchone()
 
         check_level_up_result = self.check_level_up(now_level=now_user[0], now_experience=now_user[1])
 
         if (check_level_up_result['level_up']):
-            self.cursor.execute('UPDATE levels SET level = ?, experience = ? WHERE id = ?', (
+            self.cursor.execute('UPDATE levels SET level = %s, experience = %s WHERE id = %s', (
                 check_level_up_result['level'],
                 check_level_up_result['experience'],
                 now_user[2]
             ))
         else:
-            self.cursor.execute('UPDATE levels SET experience = ? WHERE id = ?', (
+            self.cursor.execute('UPDATE levels SET experience = %s WHERE id = %s', (
                 check_level_up_result['experience'],
                 now_user[2]
             ))
@@ -74,7 +76,7 @@ class Database:
         return check_level_up_result
 
     def get_user_level(self, discord_user_id, guild_id):
-        user = self.cursor.execute('SELECT users.id, users.discord_user_id, users.name, users.guild_id, levels.level, levels.experience FROM levels JOIN users on users.id = levels.user_id WHERE users.discord_user_id = ? AND users.guild_id = ?', (discord_user_id, guild_id)).fetchone()
+        user = self.cursor.execute('SELECT users.id, users.discord_user_id, users.name, users.guild_id, levels.level, levels.experience FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %s AND users.guild_id = %s', (discord_user_id, guild_id)).fetchone()
 
         if user is None:
             return False
@@ -89,7 +91,7 @@ class Database:
             }
 
     def check_user_exist(self, discord_user_id, guild_id):
-        user = self.cursor.execute('SELECT * FROM users WHERE discord_user_id = ? AND users.guild_id = ?', (discord_user_id, guild_id)).fetchone()
+        user = self.cursor.execute('SELECT * FROM users WHERE discord_user_id = %s AND users.guild_id = %s', (discord_user_id, guild_id)).fetchone()
 
         if user is None:
             return False
