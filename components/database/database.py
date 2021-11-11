@@ -145,6 +145,8 @@ class Database:
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
         })
+        
+        print(user)
 
         if user:
             return True

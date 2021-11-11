@@ -19,7 +19,6 @@ class LevelSystem(commands.Cog):
 
         database.level_up(message.author.id, message.guild.id, 10)
 
-        database.commit()
         database.close()
         
         await bot.process_commands(message)
