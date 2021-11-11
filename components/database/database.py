@@ -92,7 +92,7 @@ class Database:
             }
 
     def check_user_exist(self, discord_user_id, guild_id):
-        user = self.cursor.execute('SELECT * FROM users WHERE discord_user_id = %s AND users.guild_id = %s', (discord_user_id, guild_id)).fetchone()
+        user = self.cursor.execute('SELECT * FROM users WHERE discord_user_id = %s AND users.guild_id = %s', (discord_user_id, guild_id))
 
         if user is None:
             return False
