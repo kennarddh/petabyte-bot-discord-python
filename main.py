@@ -26,7 +26,7 @@ bot.add_cog(error_handler.CommandErrorHandler(bot))
 bot.add_cog(admin_commands.AdminCommands(bot))
 bot.add_cog(public_commands.PublicCommands(bot))
 bot.add_cog(translate.translate.Translate(bot))
-bot.add_cog(level_system.LevelSystem(bot))
+bot.add_cog(level_system.level_system.LevelSystem(bot))
 
 @bot.event
 async def on_ready():
