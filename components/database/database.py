@@ -141,11 +141,13 @@ class Database:
         print('check_user_exist')
         print(discord_user_id)
         print(guild_id)
-        user = self.cursor.execute('SELECT * FROM users WHERE discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
+        self.cursor.execute('SELECT * FROM users WHERE discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
         })
-        
+
+        user = self.cursor.fetchone()
+
         print(user)
 
         if user:
