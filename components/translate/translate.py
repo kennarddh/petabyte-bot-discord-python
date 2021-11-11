@@ -1,5 +1,6 @@
 import asyncio
 from googletrans import Translator
+from typing import Optional
 
 import nextcord
 from nextcord.ext import commands
@@ -33,7 +34,7 @@ class Translate(commands.Cog):
         else:
             if source.lower() in list(language.keys()) or source.lower() in country_code:
                 if source.lower() in country_code:
-                    _source = source
+                    _source = source.lower()
                 else:
                     _source = language[source]
             else:
@@ -41,20 +42,23 @@ class Translate(commands.Cog):
 
         if destination.lower() in list(language.keys()) or destination.lower() in country_code:
             if destination.lower() in country_code:
-                _destination = destination
+                _destination = destination.lower()
             else:
                 _destination = language[destination]
         else:
             return await ctx.send('Invalid destination language')
 
-        result = translator.translate(' '.join(text[:]), dest=_destination, src=_source)
+        if _source != 'auto':
+            result = translator.translate(' '.join(text[:]), dest=_destination, src=_source)
+        else:
+            result = translator.translate(' '.join(text[:]), dest=_destination)
 
         embed = nextcord.Embed(color=nextcord.Colour.blurple())
 
         embed.add_field(name="Original", value=' '.join(text[:]), inline=False)
         embed.add_field(name="Result", value=result.text, inline=False)
-        embed.add_field(name="Source Language", value={v: k for k, v in language.items()}[_source], inline=False)
-        embed.add_field(name="Destination Language", value={v: k for k, v in language.items()}[_destination], inline=False)
+        embed.add_field(name="Source Language", value={v: k for k, v in language.items()}[result.src], inline=False)
+        embed.add_field(name="Destination Language", value={v: k for k, v in language.items()}[result.dest], inline=False)
 
         await ctx.reply(embed = embed)
 
