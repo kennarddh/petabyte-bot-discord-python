@@ -21,6 +21,7 @@ class LevelSystem(commands.Cog):
 
         database.close()
 
+
     @commands.command(name='my_stats', description='Show my stats')
     @commands.has_role('Verified')
     async def my_stats(self, ctx):
@@ -41,7 +42,7 @@ class LevelSystem(commands.Cog):
         )
         
         embed.add_field(
-            name='Level',
+            name='Experience',
             value=my_stats_result['experience']
         )
 
