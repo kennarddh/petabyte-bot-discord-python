@@ -1,5 +1,6 @@
 import asyncio
 from typing import Optional
+import psutil
 
 import nextcord
 
@@ -138,5 +139,23 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     value='Invalid command or category',
                     inline=False
                 )
+
+        await ctx.reply(embed=embed)
+
+    @commands.command(name="bot_stats", description='Show bot stats')
+    @commands.has_role('Verified')
+    async def bot_stats(self, ctx):
+        """Show bot stats"""
+        embed = nextcord.Embed(title='My Stats!')
+
+        embed.add_field(
+            name='CPU',
+            value='{}%'.format(psutil.cpu_percent())
+        )
+
+        embed.add_field(
+            name='Memory',
+            value='{}%'.format(psutil.virtual_memory()[2])
+        )
 
         await ctx.reply(embed=embed)
