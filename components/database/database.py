@@ -10,8 +10,6 @@ class Database:
         self.cursor = self.connection.cursor()
 
     def close(self):
-        print('close')
-        
         self.cursor.close()
         
         self.connection.close()
@@ -19,15 +17,9 @@ class Database:
     def commit(self):
         """Commit changes"""
 
-        print('commit')
-
         self.connection.commit()
 
     def check_level_up(self, new_experience, now_level):
-        print('check_level_up')
-        print(new_experience)
-        print(now_level)
-
         _experience = new_experience
         _level = now_level
 
@@ -47,11 +39,6 @@ class Database:
         
         Return inserted user id.
         """
-        
-        print('create_user')
-        print(discord_user_id)
-        print(name)
-        print(guild_id)
 
         if not self.check_user_exist(discord_user_id, guild_id):
             self.cursor.execute('INSERT INTO users(discord_user_id, name, guild_id) VALUES(%(discord_user_id)s, %(name)s, %(guild_id)s) RETURNING id', {
@@ -79,16 +66,6 @@ class Database:
         Return check_level_up_result.
         """
 
-        print('level_up')
-        print(discord_user_id)
-        print(guild_id)
-        print(points)
-
-        print('SELECT levels.level, levels.experience, levels.id FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s' % {
-            'discord_user_id': int(discord_user_id),
-            'guild_id': int(guild_id)
-        })
-
         self.cursor.execute('SELECT levels.level, levels.experience, levels.id FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
@@ -115,9 +92,6 @@ class Database:
         return check_level_up_result
 
     def get_user_level(self, discord_user_id, guild_id):
-        print('get_user_level')
-        print(discord_user_id)
-        print(guild_id)
         user = self.cursor.execute('SELECT users.id, users.discord_user_id, users.name, users.guild_id, levels.level, levels.experience FROM levels INNER JOIN users on users.id = levels.user_id WHERE users.discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
@@ -138,17 +112,12 @@ class Database:
             }
 
     def check_user_exist(self, discord_user_id, guild_id):
-        print('check_user_exist')
-        print(discord_user_id)
-        print(guild_id)
         self.cursor.execute('SELECT * FROM users WHERE discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
         })
 
         user = self.cursor.fetchone()
-
-        print(user)
 
         if user:
             return True
