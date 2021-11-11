@@ -120,8 +120,8 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     embed.add_field(
                         name='{}{} {}'.format(
                             self.bot.command_prefix,
-                            help_data[command['name'].lower()]['name'],
-                            help_data[command['name'].lower()]['signature']
+                            command['name'].lower(),
+                            command['name'].lower()
                         ),
                         value=help_data[command['name'].lower()]['description'],
                         inline=False
