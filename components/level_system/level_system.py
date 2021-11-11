@@ -22,3 +22,29 @@ class LevelSystem(commands.Cog):
         database.close()
         
         await self.bot.process_commands(message)
+
+    @commands.command(name='my_stats', description='Show my stats')
+    @commands.has_role('Verified')
+    async def my_stats(self, ctx):
+        database = Database()
+
+        if not database.check_user_exist(ctx.author.id, ctx.guild.id):
+            database.create_user(ctx.author.id, ctx.author.name, ctx.guild.id)
+        
+        my_stats_result = database.get_user_stats(ctx.author.id, ctx.guild.id)
+
+        database.close()
+
+        embed = nextcord.Embed(title='My stats')
+
+        embed.add_field(
+            name='Level',
+            value=my_stats_result['level']
+        )
+        
+        embed.add_field(
+            name='Level',
+            value=my_stats_result['experience']
+        )
+
+        await ctx.reply(embed=embed)
