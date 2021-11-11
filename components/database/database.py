@@ -9,7 +9,7 @@ class Database:
 
         self.cursor = self.connection.cursor()
 
-    def close():
+    def close(self):
         print('close')
         
         self.cursor.close()
@@ -31,7 +31,7 @@ class Database:
         _experience = new_experience
         _level = now_level
 
-        while _level * 10 >= _experience:
+        while _experience >= _level * 10:
             _experience -= _level * 10
             _level += 1
 
@@ -96,7 +96,7 @@ class Database:
         
         now_user = self.cursor.fetchone()
 
-        check_level_up_result = self.check_level_up(now_level=now_user[0], new_experience=points)
+        check_level_up_result = self.check_level_up(now_level=now_user[0], new_experience=points + now_user[1])
 
         if (check_level_up_result['level_up']):
             self.cursor.execute('UPDATE levels SET level = %(level)s, experience = %(experience)s WHERE id = %(id)s', {

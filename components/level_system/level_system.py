@@ -21,4 +21,4 @@ class LevelSystem(commands.Cog):
 
         database.close()
         
-        await bot.process_commands(message)
+        await self.bot.process_commands(message)
