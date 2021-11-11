@@ -71,10 +71,10 @@ class PublicCommands(commands.Cog, name='Public commands'):
             if not description or description is None or description == '':
                 description = 'No description provided'
 
-            if '_'.join([i for i in before_category.lower()]) not in help_data:
-                help_data['_'.join([i for i in before_category.lower()])] = []
+            if '_'.join([i for i in before_category.lower().split()]) not in help_data:
+                help_data['_'.join([i for i in before_category.lower().split()])] = []
 
-            help_data['_'.join([i for i in before_category.lower()])].append({
+            help_data['_'.join([i for i in before_category.lower().split()])].append({
                 'name': command.name,
                 'signature': command.signature if command.signature is not None else '',
                 'description': description
@@ -120,10 +120,10 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     embed.add_field(
                         name='{}{} {}'.format(
                             self.bot.command_prefix,
-                            help_data[command.lower()]['name'],
-                            help_data[command.lower()]['signature']
+                            help_data[command.name.lower()]['name'],
+                            help_data[command.name.lower()]['signature']
                         ),
-                        value=help_data[command.lower()]['description'],
+                        value=help_data[command.name.lower()]['description'],
                         inline=False
                     )
             else:
