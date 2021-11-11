@@ -123,7 +123,7 @@ class PublicCommands(commands.Cog, name='Public commands'):
                             command['name'].lower(),
                             command['name'].lower()
                         ),
-                        value=help_data[command['name'].lower()]['description'],
+                        value=command['name'].lower(),
                         inline=False
                     )
             else:
