@@ -1,4 +1,5 @@
 import asyncio
+from typing import Optional
 
 import nextcord
 
@@ -77,3 +78,35 @@ class AdminCommands(commands.Cog, name='Admin commands'):
                 await member.edit(nick = memberName)
 
         await ctx.channel.send("Successfully Changed All Member Nickname\nOld To New")
+
+    @commands.command(name="lock", description="Lock channel or server")
+    @commands.has_role('Petabyte bot manager')
+    @commands.has_role('Verified')
+    async def lock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
+        if setting == '--server':
+            for channel in ctx.guild.channels:
+                await channel.set_permissions(ctx.guild.default_role, reason='{} locked {} with --server'.format(ctx.author.name, channel.name), send_message=False)
+            
+            return await ctx.send('Locked server down')
+
+        if channel is None:
+            channel = ctx.message.channel
+
+        await channel.set_permissions(ctx.guild.default_role, reason='{} locked {}'.format(ctx.author.name, channel.name), send_message=False)
+        await ctx.send('Locked channel down')
+
+    @commands.command(name="unlock", description="Unlock channel or server")
+    @commands.has_role('Petabyte bot manager')
+    @commands.has_role('Verified')
+    async def unlock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
+        if setting == '--server':
+            for channel in ctx.guild.channels:
+                await channel.set_permissions(ctx.guild.default_role, reason='{} unlocked {} with --server'.format(ctx.author.name, channel.name), send_message=True)
+            
+            return await ctx.send('Unlocked server')
+
+        if channel is None:
+            channel = ctx.message.channel
+
+        await channel.set_permissions(ctx.guild.default_role, reason='{} unlocked {}'.format(ctx.author.name, channel.name), send_message=True)
+        await ctx.send('Unlocked channel')
