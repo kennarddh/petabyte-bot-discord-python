@@ -23,12 +23,12 @@ class Database:
 
         self.connection.commit()
 
-    def check_level_up(self, now_experience, now_level):
+    def check_level_up(self, new_experience, now_level):
         print('check_level_up')
-        print(now_experience)
+        print(new_experience)
         print(now_level)
 
-        _experience = now_experience
+        _experience = new_experience
         _level = now_level
 
         while _level * 10 >= _experience:
@@ -96,7 +96,7 @@ class Database:
         
         now_user = self.cursor.fetchone()
 
-        check_level_up_result = self.check_level_up(now_level=now_user[0], now_experience=now_user[1])
+        check_level_up_result = self.check_level_up(now_level=now_user[0], new_experience=points)
 
         if (check_level_up_result['level_up']):
             self.cursor.execute('UPDATE levels SET level = %(level)s, experience = %(experience)s WHERE id = %(id)s', {
