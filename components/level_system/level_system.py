@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 
-from ..database import Database
+from ..database.database import Database
 
 class LevelSystem(commands.Cog):
     def __init__(self, bot):
@@ -9,7 +9,7 @@ class LevelSystem(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == bot.user:
+        if message.author == self.bot.user:
             return
 
         database = Database()
