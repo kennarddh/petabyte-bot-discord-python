@@ -116,6 +116,12 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     inline=False
                 )
             elif str(command_or_category).lower() in list(help_data.keys()):
+                embed.add_field(
+                    name='{}'.format(str(command_or_category).lower()),
+                    value='\u200b',
+                    inline=False
+                )
+
                 for command in help_data[str(command_or_category).lower()]:
                     embed.add_field(
                         name='{}{} {}'.format(
