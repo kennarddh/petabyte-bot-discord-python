@@ -20,8 +20,6 @@ class LevelSystem(commands.Cog):
         database.level_up(message.author.id, message.guild.id, 10)
 
         database.close()
-        
-        await self.bot.process_commands(message)
 
     @commands.command(name='my_stats', description='Show my stats')
     @commands.has_role('Verified')
