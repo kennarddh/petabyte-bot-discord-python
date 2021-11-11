@@ -40,23 +40,24 @@ class Database:
         Return inserted user id.
         """
         
-        self.cursor.execute('INSERT INTO users(discord_user_id, name, guild_id) VALUES(%(discord_user_id)s, %(name)s, %(guild_id)s)', {
-            'discord_user_id': int(discord_user_id),
-            'name': name,
-            'guild_id': int(guild_id)
-        })
+        if not self.check_user_exist(discord_user_id, guild_id):
+            self.cursor.execute('INSERT INTO users(discord_user_id, name, guild_id) VALUES(%(discord_user_id)s, %(name)s, %(guild_id)s)', {
+                'discord_user_id': int(discord_user_id),
+                'name': name,
+                'guild_id': int(guild_id)
+            })
 
-        new_user_id = self.cursor.lastrowid
+            new_user_id = self.cursor.lastrowid
 
-        self.cursor.execute('INSERT INTO levels(user_id, level, experience) VALUES(%(new_user_id)s, %(level)s, %(experience)s)', {
-            'new_user_id': int(new_user_id),
-            'level': 1,
-            'experience': 0
-        })
+            self.cursor.execute('INSERT INTO levels(user_id, level, experience) VALUES(%(new_user_id)s, %(level)s, %(experience)s)', {
+                'new_user_id': int(new_user_id),
+                'level': 1,
+                'experience': 0
+            })
 
-        self.commit()
+            self.commit()
 
-        return new_user_id
+            return new_user_id
 
     def level_up(self, discord_user_id, guild_id, points):
         """
