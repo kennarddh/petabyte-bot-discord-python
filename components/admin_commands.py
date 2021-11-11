@@ -83,30 +83,34 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def lock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
+        verified_role = discord.utils.get(ctx.guild.roles, name="Verified")
+
         if setting == '--server':
             for channel in ctx.guild.channels:
-                await channel.set_permissions(ctx.guild.default_role, reason='{} locked {} with --server'.format(ctx.author.name, channel.name), send_message=False)
+                await channel.set_permissions(verified_role, reason='{} locked {} with --server'.format(ctx.author.name, channel.name), send_messages=False)
             
             return await ctx.send('Locked server down')
 
         if channel is None:
             channel = ctx.message.channel
 
-        await channel.set_permissions(ctx.guild.default_role, reason='{} locked {}'.format(ctx.author.name, channel.name), send_message=False)
+        await channel.set_permissions(verified_role, reason='{} locked {}'.format(ctx.author.name, channel.name), send_messages=False)
         await ctx.send('Locked channel down')
 
     @commands.command(name="unlock", description="Unlock channel or server")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     async def unlock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
+        verified_role = discord.utils.get(ctx.guild.roles, name="Verified")
+        
         if setting == '--server':
             for channel in ctx.guild.channels:
-                await channel.set_permissions(ctx.guild.default_role, reason='{} unlocked {} with --server'.format(ctx.author.name, channel.name), send_message=True)
+                await channel.set_permissions(verified_role, reason='{} unlocked {} with --server'.format(ctx.author.name, channel.name), send_messages=True)
             
             return await ctx.send('Unlocked server')
 
         if channel is None:
             channel = ctx.message.channel
 
-        await channel.set_permissions(ctx.guild.default_role, reason='{} unlocked {}'.format(ctx.author.name, channel.name), send_message=True)
+        await channel.set_permissions(verified_role, reason='{} unlocked {}'.format(ctx.author.name, channel.name), send_messages=True)
         await ctx.send('Unlocked channel')
