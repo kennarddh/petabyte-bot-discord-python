@@ -65,24 +65,16 @@ class PublicCommands(commands.Cog, name='Public commands'):
         for command in self.bot.walk_commands():
             description = command.description
 
-            print(command)
-            print(command.cog.cog)
-            print(command.cog.cog.qualified_names)
-
-            if before_category != '_'.join([i for i in str(command.cog.qualified_names.lower()).split()]) or before_category is None:
-                print(before_category)
-                print('_'.join([i for i in str(command.cog.qualified_names.lower()).split()]))
-                before_category = '_'.join([i for i in str(command.cog.qualified_names.lower()).split()]) if command.cog is not None else no_category
+            if before_category != command.cog.qualified_name or before_category is None:
+                before_category = command.cog.qualified_name if command.cog is not None else no_category
 
             if not description or description is None or description == '':
                 description = 'No description provided'
 
-            if before_category not in help_data:
-                print(before_category)
-                print(help_data['_'.join([i.lower() for i in before_category.split()])])
-                help_data['_'.join([i.lower() for i in before_category.split()])] = []
+            if '_'.join([i for i in before_category.lower()]) not in help_data:
+                help_data['_'.join([i for i in before_category.lower()])] = []
 
-            help_data['_'.join([i.lower() for i in before_category.split()])].append({
+            help_data['_'.join([i for i in before_category.lower()])].append({
                 'name': command.name,
                 'signature': command.signature if command.signature is not None else '',
                 'description': description
@@ -93,11 +85,6 @@ class PublicCommands(commands.Cog, name='Public commands'):
                 'signature': command.signature if command.signature is not None else '',
                 'description': description
             }
-            
-        print(help_data)
-        print(all_command)
-
-        print(['_'.join([e.lower() for e in i.split()]) for i in list(help_data.keys())])
 
         if not command_or_category:
             for category, command_list in help_data.items():
@@ -119,42 +106,24 @@ class PublicCommands(commands.Cog, name='Public commands'):
                     )
         elif command_or_category:
             if str(command_or_category).lower() in all_command.keys():
-                try:
+                embed.add_field(
+                    name='{}{} {}'.format(
+                        self.bot.command_prefix,
+                        all_command[str(command_or_category).lower()]['name'],
+                        all_command[str(command_or_category).lower()]['signature']
+                    ),
+                    value=all_command[str(command_or_category).lower()]['description'],
+                    inline=False
+                )
+            elif str(command_or_category).lower() in list(help_data.keys()):
+                for command in help_data[str(command_or_category).lower()]:
                     embed.add_field(
                         name='{}{} {}'.format(
                             self.bot.command_prefix,
-                            all_command[str(command_or_category).lower()]['name'],
-                            all_command[str(command_or_category).lower()]['signature']
+                            help_data[command.lower()]['name'],
+                            help_data[command.lower()]['signature']
                         ),
-                        value=all_command[str(command_or_category).lower()]['description'],
-                        inline=False
-                    )
-                except KeyError:
-                    embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
-
-                    embed.add_field(
-                        name='Error',
-                        value='Invalid command or category',
-                        inline=False
-                    )
-            elif str(command_or_category).lower() in list(help_data.keys()):
-                try:
-                    for command in help_data[str(command_or_category).lower()]:
-                        embed.add_field(
-                            name='{}{} {}'.format(
-                                self.bot.command_prefix,
-                                command['name'],
-                                command['signature']
-                            ),
-                            value=command['description'],
-                            inline=False
-                        )
-                except KeyError:
-                    embed = nextcord.Embed(title='Petabyte\'s help', description='Help command for Petabyte bot')
-
-                    embed.add_field(
-                        name='Error',
-                        value='Invalid command or category',
+                        value=help_data[command.lower()]['description'],
                         inline=False
                     )
             else:
