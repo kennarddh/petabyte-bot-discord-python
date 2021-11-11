@@ -82,35 +82,31 @@ class AdminCommands(commands.Cog, name='Admin commands'):
     @commands.command(name="lock", description="Lock channel or server")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
-    async def lock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
-        verified_role = nextcord.utils.get(ctx.guild.roles, name="Verified")
+    @commands.has_permissions(manage_channels=True)
+    async def lock(self, ctx, channel: nextcord.TextChannel = None):
+        try:
+            verified_role = nextcord.utils.get(ctx.guild.roles, name="Verified")
 
-        if setting == '--server':
-            for channel in ctx.guild.channels:
-                await channel.set_permissions(verified_role, reason='{} locked {} with --server'.format(ctx.author.name, channel.name), send_messages=False)
-            
-            return await ctx.send('Locked server down')
+            if channel is None:
+                channel = ctx.message.channel
 
-        if channel is None:
-            channel = ctx.message.channel
-
-        await channel.set_permissions(verified_role, reason='{} locked {}'.format(ctx.author.name, channel.name), send_messages=False)
-        await ctx.send('Locked channel down')
+            await channel.set_permissions(verified_role, reason='{} locked {}'.format(ctx.author.name, channel.name), send_messages=False)
+            await ctx.send('Locked channel down')
+        except nextcord.errors.Forbidden:
+            await ctx.send('No permision to manage permision')
 
     @commands.command(name="unlock", description="Unlock channel or server")
     @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
-    async def unlock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
-        verified_role = nextcord.utils.get(ctx.guild.roles, name="Verified")
-        
-        if setting == '--server':
-            for channel in ctx.guild.channels:
-                await channel.set_permissions(verified_role, reason='{} unlocked {} with --server'.format(ctx.author.name, channel.name), send_messages=True)
+    @commands.has_permissions(manage_channels=True)
+    async def unlock(self, ctx, channel: nextcord.TextChannel = None):
+        try:
+            verified_role = nextcord.utils.get(ctx.guild.roles, name="Verified")
             
-            return await ctx.send('Unlocked server')
+            if channel is None:
+                channel = ctx.message.channel
 
-        if channel is None:
-            channel = ctx.message.channel
-
-        await channel.set_permissions(verified_role, reason='{} unlocked {}'.format(ctx.author.name, channel.name), send_messages=True)
-        await ctx.send('Unlocked channel')
+            await channel.set_permissions(verified_role, reason='{} unlocked {}'.format(ctx.author.name, channel.name), send_messages=True)
+            await ctx.send('Unlocked channel')
+        except nextcord.errors.Forbidden:
+            await ctx.send('No permision to manage permision')
