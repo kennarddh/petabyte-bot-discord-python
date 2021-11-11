@@ -15,7 +15,7 @@ class LevelSystem(commands.Cog):
         database = Database()
 
         if not database.check_user_exist(message.author.id, message.guild.id):
-            database.create_user(message.author.id, message.guild.id)
+            database.create_user(message.author.id, message.author.name, message.guild.id)
 
         database.level_up(message.author.id, message.guild.id, 10)
 
