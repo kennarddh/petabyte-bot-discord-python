@@ -292,8 +292,8 @@ class Music(commands.Cog):
         
         ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(name='music_leave', aliases=['music_disconnect'])
-    @commands.has_role('Petabyte bot manager', description='Clears the queue and leaves the voice channel.')
+    @commands.command(name='music_leave', aliases=['music_disconnect'], description='Clears the queue and leaves the voice channel.')
+    @commands.has_role('Petabyte bot manager')
     @commands.has_role('Verified')
     @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
