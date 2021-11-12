@@ -3,7 +3,7 @@ from nextcord.ext import commands
 
 from ..database.database import Database
 
-class LevelSystem(commands.Cog):
+class LevelSystem(commands.Cog, name='level'):
     def __init__(self, bot):
         self.bot = bot
 

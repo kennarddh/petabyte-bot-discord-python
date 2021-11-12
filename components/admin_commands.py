@@ -6,7 +6,7 @@ import nextcord
 from nextcord.ext import commands
 
 
-class AdminCommands(commands.Cog, name='Admin commands'):
+class AdminCommands(commands.Cog, name='admin_commands'):
     def __init__(self, bot):
         self.bot = bot
 

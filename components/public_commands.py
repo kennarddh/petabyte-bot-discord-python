@@ -7,7 +7,7 @@ import nextcord
 from nextcord.ext import commands
 
 
-class PublicCommands(commands.Cog, name='Public commands'):
+class PublicCommands(commands.Cog, name='public_commands'):
     def __init__(self, bot):
         self.bot = bot
 

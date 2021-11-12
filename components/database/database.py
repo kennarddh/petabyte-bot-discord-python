@@ -123,3 +123,81 @@ class Database:
             return True
         else:
             return False
+
+    def get_user(self, discord_user_id, guild_id):
+        self.cursor.execute('SELECT id, discord_user_id, name, guild_id FROM users WHERE discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
+            'discord_user_id': int(discord_user_id),
+            'guild_id': int(guild_id)
+        })
+
+        user = self.cursor.fetchone()
+
+        return {
+            'id': user[0],
+            'discord_user_id': user[1],
+            'name': user[2],
+            'guild_id': user[3]
+        }
+
+    def suggestion_status(self, suggestion_id):
+        self.cursor.execute('SELECT id, content, status, user_id FROM suggestions WHERE id = %(id)s', {
+            'id': int(suggestion_id)
+        })
+
+        suggestion = self.cursor.fetchone()
+
+        return {
+            'id': suggestion[0],
+            'content': suggestion[1],
+            'status': suggestion[2],
+            'user_id':suggestion[3] 
+        }
+
+    def new_suggestion(self, discord_user_id, guild_id, name, suggestion):
+        if self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
+        if self.get_user_stats(discord_user_id, guild_id)['level'] < 10:
+            return False
+
+        user = self.get_user(discord_user_id, guild_id)
+
+        self.cursor.execute('INSERT INTO suggestions(content, status, user_id) VALUES(%(content)s, %(status)s, %(user_id)s) RETURNING id', {
+            'content': int(new_user_id),
+            'status': 'not_yet_approved',
+            'user_id': user['id']
+        })
+
+        suggestion_id = self.cursor.fetchone()[0]
+
+        suggestion = self.suggestion_status(suggestion_id)
+
+        return suggestion
+
+    def get_all_my_suggestion(self, discord_user_id, guild_id, name):
+        if self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
+        if self.get_user_stats(discord_user_id, guild_id)['level'] < 10:
+            return False
+
+        user = self.get_user(discord_user_id, guild_id)
+
+        self.cursor.execute('SELECT id, content, status, user_id FROM suggestions WHERE user_id = %(user_id)s', {
+            'user_id': user['id']
+        })
+
+        all_suggestion = list(self.cursor.fetchall())
+
+        return all_suggestion
+
+    def get_my_suggestion(self, discord_user_id, guild_id, name, suggestion_id):
+        if self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
+        if self.get_user_stats(discord_user_id, guild_id)['level'] < 10:
+            return False
+
+        suggestion = self.suggestion_status(suggestion_id)
+
+        return suggestion

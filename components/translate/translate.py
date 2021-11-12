@@ -8,7 +8,7 @@ from nextcord.ext import commands
 from .constant import language, country_code
 
 
-class Translate(commands.Cog):
+class Translate(commands.Cog, name='translate'):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
     
