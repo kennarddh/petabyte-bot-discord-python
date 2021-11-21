@@ -124,7 +124,10 @@ class Database:
         else:
             return False
 
-    def get_user(self, discord_user_id, guild_id):
+    def get_user(self, discord_user_id, name, guild_id):
+        if not self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
         self.cursor.execute('SELECT id, discord_user_id, name, guild_id FROM users WHERE discord_user_id = %(discord_user_id)s AND users.guild_id = %(guild_id)s', {
             'discord_user_id': int(discord_user_id),
             'guild_id': int(guild_id)
@@ -160,13 +163,15 @@ class Database:
         if self.get_user_stats(discord_user_id, guild_id)['level'] < 10:
             return False
 
-        user = self.get_user(discord_user_id, guild_id)
+        user = self.get_user(discord_user_id, name, guild_id)
 
         self.cursor.execute('INSERT INTO suggestions(content, status, user_id) VALUES(%(content)s, %(status)s, %(user_id)s) RETURNING id', {
-            'content': int(new_user_id),
+            'content': suggestion,
             'status': 'not_yet_approved',
             'user_id': user['id']
         })
+
+        self.commit()
 
         suggestion_id = self.cursor.fetchone()[0]
 

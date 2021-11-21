@@ -7,7 +7,7 @@ from nextcord.utils import get
 from dotenv import load_dotenv
 
 # components
-from components import music, error_handler, admin_commands, public_commands, translate, level_system
+from components import music, error_handler, admin_commands, public_commands, translate, level_system, suggestion
 
 
 load_dotenv()
@@ -27,6 +27,7 @@ bot.add_cog(admin_commands.AdminCommands(bot))
 bot.add_cog(public_commands.PublicCommands(bot))
 bot.add_cog(translate.translate.Translate(bot))
 bot.add_cog(level_system.level_system.LevelSystem(bot))
+bot.add_cog(suggestion.suggestion.Suggestion(bot))
 
 @bot.event
 async def on_ready():
