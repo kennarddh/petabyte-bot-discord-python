@@ -149,6 +149,9 @@ class Database:
 
         suggestion = self.cursor.fetchone()
 
+        if isinstance(suggestion, type(None)):
+            return False
+
         return {
             'id': suggestion[0],
             'content': suggestion[1],
@@ -186,17 +189,26 @@ class Database:
         if self.get_user_stats(discord_user_id, guild_id)['level'] < 10:
             return False
 
-        user = self.get_user(discord_user_id, guild_id)
+        user = self.get_user(discord_user_id, name, guild_id)
 
-        self.cursor.execute('SELECT id, content, status, user_id FROM suggestions WHERE user_id = %(user_id)s', {
+        self.cursor.execute('SELECT id, content, status FROM suggestions WHERE user_id = %(user_id)s', {
             'user_id': user['id']
         })
 
         all_suggestion = list(self.cursor.fetchall())
 
-        return all_suggestion
+        all_suggestion_return = [
+            {
+                'id': i[0],
+                'content': i[1],
+                'status': i[2],
+            }
+            for i in all_suggestion
+        ]
 
-    def get_my_suggestion(self, discord_user_id, guild_id, name, suggestion_id):
+        return all_suggestion_return
+
+    def get_suggestion_detail(self, discord_user_id, guild_id, name, suggestion_id):
         if self.check_user_exist(discord_user_id, guild_id):
             self.create_user(discord_user_id, name, guild_id)
 
@@ -205,4 +217,88 @@ class Database:
 
         suggestion = self.suggestion_status(suggestion_id)
 
+        if not suggestion:
+            return 'no_suggestion'
+
         return suggestion
+
+    def get_all_suggestion(self, discord_user_id, guild_id, name):
+        if self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
+        if self.get_user_stats(discord_user_id, guild_id)['level'] < 10:
+            return False
+
+        user = self.get_user(discord_user_id, name, guild_id)
+
+        self.cursor.execute('SELECT id, content, status FROM suggestions')
+
+        all_suggestion = list(self.cursor.fetchall())
+
+        all_suggestion_return = [
+            {
+                'id': i[0],
+                'content': i[1],
+                'status': i[2],
+            }
+            for i in all_suggestion
+        ]
+
+        return all_suggestion_return
+
+
+    def approve_suggestion(self, discord_user_id, guild_id, name, suggestion_id):
+        if self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
+        user = self.get_user(discord_user_id, name, guild_id)
+        
+        suggestion = self.get_suggestion_detail(discord_user_id, guild_id, name, suggestion_id)
+
+        if suggestion['status'] == 'approved':
+            return False
+
+        self.cursor.execute('UPDATE suggestions SET status = %(status)s WHERE id = %(id)s', {
+            'status': 'approved',
+            'id': int(suggestion_id)
+        })
+
+        self.commit()
+
+        return True
+
+    def decline_suggestion(self, discord_user_id, guild_id, name, suggestion_id):
+        if self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
+        user = self.get_user(discord_user_id, name, guild_id)
+
+        suggestion = self.get_suggestion_detail(discord_user_id, guild_id, name, suggestion_id)
+
+        if suggestion['status'] == 'declined':
+            return False
+
+        self.cursor.execute('UPDATE suggestions SET status = %(status)s WHERE id = %(id)s', {
+            'status': 'declined',
+            'id': int(suggestion_id)
+        })
+
+    def delete_suggestion(self, discord_user_id, guild_id, name, suggestion_id):
+        if self.check_user_exist(discord_user_id, guild_id):
+            self.create_user(discord_user_id, name, guild_id)
+
+        user = self.get_user(discord_user_id, name, guild_id)
+
+        suggestion = self.get_suggestion_detail(discord_user_id, guild_id, name, suggestion_id)
+
+        if suggestion['status'] == 'deleted':
+            return False
+
+        self.cursor.execute('UPDATE suggestions SET status = %(status)s WHERE id = %(id)s', {
+            'status': 'deleted',
+            'id': int(suggestion_id)
+        })
+
+        self.commit()
+
+        return True
